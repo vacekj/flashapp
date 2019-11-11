@@ -7,7 +7,11 @@ import {
     Link
 } from "react-router-dom";
 import './App.css';
+
 import Navbar from "./Components/Navbar";
+import Home from "./Components/Home";
+import Review from "./Components/Review";
+import Add from "./Components/Add";
 
 export default function App() {
     return (
@@ -18,41 +22,14 @@ export default function App() {
                     <Route exact path="/">
                         <Home/>
                     </Route>
-                    <Route path="/about">
-                        <About/>
+                    <Route path="/review">
+                        <Review/>
                     </Route>
-                    <Route path="/dashboard">
-                        <Dashboard/>
+                    <Route path="/add">
+                        <Add/>
                     </Route>
                 </Switch>
             </div>
         </Router>
-    );
-}
-
-// You can think of these components as "pages"
-// in your app.
-
-function Home() {
-    return (
-        <div>
-            <h2>Home</h2>
-        </div>
-    );
-}
-
-function About() {
-    return (
-        <div>
-            <h2>About</h2>
-        </div>
-    );
-}
-
-function Dashboard() {
-    return (
-        <div>
-            <h2>Dashboard</h2>
-        </div>
     );
 }
