@@ -1,5 +1,4 @@
 import React from "react";
-import {Link} from "react-router-dom";
 
 import "./Card.css";
 
@@ -14,22 +13,18 @@ export default class Card extends React.Component<{ front: string; back: string 
             back: props.back,
             flipped: false
         };
-
-        this.flip = this.flip.bind(this);
     }
 
     render() {
         return (
-            <div>
+            <div className={"card"} onClick={this.flip.bind(this)}>
                 <div
                     className={"front " + (this.state.flipped ? "hidden" : "")}
-                    onClick={this.flip}
                 >
                     {this.state.front}
                 </div>
                 <div
                     className={"back " + (this.state.flipped ? "" : "hidden")}
-                    onClick={this.flip}
                 >
                     {this.state.back}
                 </div>
@@ -38,8 +33,13 @@ export default class Card extends React.Component<{ front: string; back: string 
     }
 
     flip() {
+        if (this.state.flipped) {
+            /* TODO: next card */
+        }
         this.setState({
             flipped: !this.state.flipped
         });
     }
+
+
 }

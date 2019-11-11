@@ -9,7 +9,9 @@ import Card from "../Card";
 export default class Review extends React.Component {
     render() {
         return (
-            <Card front={"Ahoj"} back={"Čau"}/>
+            <div className={"review-container"}>
+                <Card front={"Ahoj"} back={"Čau"}/>
+            </div>
         );
     }
 }
