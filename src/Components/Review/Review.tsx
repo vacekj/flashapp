@@ -1,16 +1,15 @@
-import React from 'react';
-import {
-    Link
-} from "react-router-dom";
+import React from "react";
 
 import "./Review.css";
-import Card from "../Card";
+const Deck = require("../Deck").default;
 
 export default class Review extends React.Component {
     render() {
         return (
             <div className={"review-container"}>
-                <Card front={"Ahoj"} back={"Čau"}/>
+                <React.Fragment>
+                    <Deck/>
+                </React.Fragment>
             </div>
         );
     }
