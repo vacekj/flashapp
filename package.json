@@ -2,6 +2,7 @@
   "name": "flashapp",
   "version": "0.1.0",
   "private": true,
+  "homepage":"https://jouzalol.github.io/flashapp",
   "dependencies": {
     "@types/jest": "24.0.21",
     "@types/node": "12.12.5",
@@ -38,6 +39,7 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^2.1.1",
     "prettier": "^1.19.1",
     "tailwindcss": "^1.1.3"
   }
