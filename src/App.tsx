@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.module.css";
 
 import Navbar from "./Components/Navbar";
-import Home from "./Components/Home";
 import Review from "./Components/Review";
 import Add from "./Components/Add";
+import BottomBar from "./Components/BottomBar";
 
 export default function App() {
     return (
@@ -25,6 +25,7 @@ export default function App() {
                         <Add/>
                     </Route>
                 </Switch>
+                <BottomBar/>
             </div>
         </Router>
     );

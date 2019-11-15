@@ -1,0 +1,17 @@
+.bottomBar {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 15px;
+    background: #F7F6F6;
+    border-top: solid 2px #d6d6d6;
+}
+
+.bottomBar > a {
+    padding: 8px;
+    background: white;
+    border-radius: 10px;
+}

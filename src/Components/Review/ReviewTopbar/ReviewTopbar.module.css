@@ -1,0 +1,38 @@
+.topbar {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: solid 2px #d6d6d6;
+    font-weight: bold;
+    z-index: 9999999;
+    position: relative;
+    background: #F7F6F6;
+}
+
+.topbar > * {
+    flex-basis: 33%;
+}
+
+.topbar > *:last-child {
+    text-align: right;
+}
+
+.modeSwitcher {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modeSwitcher > * {
+    padding: 5px;
+}
+
+.progressIndicator {
+    font-weight: bold;
+
+}
+
+.deckContainer * {
+    z-index: 1;
+}
