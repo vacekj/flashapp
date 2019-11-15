@@ -16,7 +16,7 @@ export default function App() {
                 <Navbar/>
                 <Switch>
                     <Route exact path="/">
-                        <Home/>
+                        <Review/>
                     </Route>
                     <Route path="/review">
                         <Review/>
