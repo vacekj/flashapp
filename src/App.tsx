@@ -1,7 +1,7 @@
 import React from "react";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import "./App.css";
+import "./App.module.css";
 
 import Navbar from "./Components/Navbar";
 import Home from "./Components/Home";
@@ -13,16 +13,16 @@ export default function App() {
         <Router basename={process.env.PUBLIC_URL}>
             {/* basename is here so that gh-pages routing works correctly */}
             <div>
-                <Navbar />
+                <Navbar/>
                 <Switch>
                     <Route exact path="/">
-                        <Home />
+                        <Home/>
                     </Route>
                     <Route path="/review">
-                        <Review />
+                        <Review/>
                     </Route>
                     <Route path="/add">
-                        <Add />
+                        <Add/>
                     </Route>
                 </Switch>
             </div>
