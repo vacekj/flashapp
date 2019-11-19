@@ -3,12 +3,13 @@ import {
     Link
 } from "react-router-dom";
 
-import "./Home.css";
+import "./Home.module.css";
+import DecksView from "../DecksView";
 
 export default function Home() {
     return (
        <div>
-           Vítejte v FlashApp
+           <DecksView/>
        </div>
     );
 }

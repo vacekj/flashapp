@@ -1,0 +1,24 @@
+.deckCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-around;
+
+
+    border-radius: 10px;
+    background: linear-gradient(#5b23ff, #0500ff);
+    color: white;
+    padding: 20px;
+    margin: 10px;
+
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.lastSession {
+    text-align: right;
+}

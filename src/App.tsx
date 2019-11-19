@@ -7,16 +7,16 @@ import Navbar from "./Components/Navbar";
 import Review from "./Components/Review";
 import Add from "./Components/Add";
 import BottomBar from "./Components/BottomBar";
+import Home from "./Components/Home";
 
 export default function App() {
     return (
         <Router basename={process.env.PUBLIC_URL}>
             {/* basename is here so that gh-pages routing works correctly */}
             <div>
-                <Navbar/>
                 <Switch>
                     <Route exact path="/">
-                        <Review/>
+                        <Home/>
                     </Route>
                     <Route path="/review">
                         <Review/>
