@@ -8,6 +8,11 @@
     color: #323232;
 }
 
+.deckView {
+    overflow: scroll;
+    height: 100vh;
+}
+
 
 a {
     text-decoration: none;

@@ -11,6 +11,8 @@
     "@types/react-dom": "16.9.3",
     "@types/react-router-dom": "^5.1.2",
     "babel-plugin-react-css-modules": "^5.2.6",
+    "faker": "^4.1.0",
+    "localforage": "^1.7.3",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
     "react-router-dom": "^5.1.2",
@@ -42,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@types/faker": "^4.1.7",
     "gh-pages": "^2.1.1",
     "prettier": "^1.19.1",
     "tailwindcss": "^1.1.3"
