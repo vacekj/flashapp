@@ -36,8 +36,8 @@ export default class App extends Component<{}, State> {
                         <Route exact path="/">
                             <Home decks={this.state.decks}/>
                         </Route>
-                        <Route path="/decks/:id" children={(props: { match: { params: { id: number } } }) => {
-                            return <Review deckId={props.match.params.id}/>;
+                        <Route path="/decks/:id" children={(props: { match: { params: { id: string } } }) => {
+                            return <Review deckId={parseInt(props.match.params.id)}/>;
                         }}/>
                         <Route path="/add">
                             <Add/>

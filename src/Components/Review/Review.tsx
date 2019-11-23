@@ -19,7 +19,17 @@ interface State {
 export default class Review extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        getDeck(props.deckId).then((deck) => {
+        this.state = {
+            deck: {
+                id: props.deckId,
+                name: "Loading",
+                description: "Loading..."
+            }
+        };
+    }
+
+    componentDidMount(): void {
+        getDeck(this.state.deck.id).then((deck) => {
             this.setState({
                 deck: deck
             });

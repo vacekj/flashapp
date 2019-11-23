@@ -17,7 +17,7 @@ export default function DecksView(props: Props) {
                 {props.decks.map((deck, i) => {
                     return (
                         <Link to={"/decks/" + deck.id} key={i}>
-                            <DeckCard name={deck.name} key={deck.id}/>
+                            <DeckCard deck={deck} key={deck.id}/>
                         </Link>
                     );
                 })}

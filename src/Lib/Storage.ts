@@ -18,9 +18,16 @@ export async function updateDeck(deck: Deck) {
     return lf.setItem("decks", [...splicedDecks, deck]);
 }
 
-export async function saveCard(card: Card) {
+export async function createCard(card: Card) {
     const cards: Card[] = await lf.getItem("cards");
-    return lf.setItem("decks", [...cards, card]);
+    return lf.setItem("cards", cards ? [...cards, card] : [card]);
+}
+
+export async function updateCard(card: Card) {
+    const cards = await getCards();
+    const cardToUpdate = cards.find((d) => d.id == card.id);
+    const splicedCards = cards.splice(cards.indexOf(cardToUpdate as Card), 1);
+    return lf.setItem("cards", [...splicedCards, card]);
 }
 
 export async function getCardsOfDeck(deckId: number) {
@@ -31,6 +38,11 @@ export async function getCardsOfDeck(deckId: number) {
 export async function getDecks(): Promise<Deck[]> {
     return lf.getItem("decks");
 }
+
+export async function getCards(): Promise<Card[]> {
+    return lf.getItem("cards");
+}
+
 
 export interface Card {
     id: number;
@@ -48,13 +60,22 @@ export interface Deck {
 export async function seedDatabase() {
     faker.locale = "cz";
     await lf.clear();
-    for (let i = 0; i < 10; i++) {
+    /* Decks */
+    for (let deckId = 0; deckId < 5; deckId++) {
         await createDeck(
             {
-                id: i,
+                id: deckId,
                 name: faker.random.word(),
                 description: faker.lorem.sentences(1)
             }
         );
+        for (let i = 0; i < 5; i++) {
+            await createCard({
+                id: i,
+                deckId: deckId,
+                front: faker.lorem.sentences(1),
+                back: faker.lorem.sentences(1)
+            });
+        }
     }
 }
