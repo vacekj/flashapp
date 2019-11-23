@@ -20,10 +20,10 @@ export default function DecksView() {
         <div>
             <div className={styles.topbar}>Decks</div>
             <div className={styles.deckView}>
-                {decks.map(deck => {
+                {decks.map((deck, i) => {
                     return (
-                        <Link to={"/decks/" + deck.id}>
-                            <DeckCard name={deck.name} />
+                        <Link to={"/decks/" + deck.id} key={i}>
+                            <DeckCard name={deck.name} key={deck.id}/>
                         </Link>
                     );
                 })}

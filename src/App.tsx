@@ -1,13 +1,11 @@
 import React from "react";
+import Home from "./Components/Home";
+import BottomBar from "./Components/BottomBar";
+import Add from "./Components/Add";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.module.css";
-
-import Navbar from "./Components/Navbar";
 import Review from "./Components/Review";
-import Add from "./Components/Add";
-import BottomBar from "./Components/BottomBar";
-import Home from "./Components/Home";
 
 export default function App() {
     return (
@@ -18,9 +16,9 @@ export default function App() {
                     <Route exact path="/">
                         <Home/>
                     </Route>
-                    <Route path="/review">
-                        <Review/>
-                    </Route>
+                    <Route path="/decks/:id" children={(props: { match: { params: { id: number} } }) => {
+                        return <Review deckId={props.match.params.id}/>;
+                    }}/>
                     <Route path="/add">
                         <Add/>
                     </Route>
