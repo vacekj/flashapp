@@ -61,7 +61,7 @@ export async function seedDatabase() {
     faker.locale = "cz";
     await lf.clear();
     /* Decks */
-    for (let deckId = 0; deckId < 5; deckId++) {
+    for (let deckId = 0; deckId < 10; deckId++) {
         await createDeck(
             {
                 id: deckId,

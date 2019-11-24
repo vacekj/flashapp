@@ -9,6 +9,8 @@ import "./App.module.css";
 import Review from "./Components/Review";
 import { Deck, getDecks, seedDatabase } from "./Lib/Storage";
 
+import styles from "./App.module.css";
+
 interface State {
     decks: Deck[]
 }
@@ -32,7 +34,7 @@ export default class App extends Component<{}, State> {
         return (
             <Router basename={process.env.PUBLIC_URL}>
                 {/* basename is here so that gh-pages routing works correctly */}
-                <div>
+                <div className={styles.main}>
                     <Switch>
                         <Route exact path="/">
                             <Home decks={this.state.decks}/>
