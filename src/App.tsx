@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Home from "./Components/Home";
 import BottomBar from "./Components/BottomBar";
 import Add from "./Components/Add";
+import "antd/dist/antd.css";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.module.css";
@@ -40,7 +41,7 @@ export default class App extends Component<{}, State> {
                             return <Review deckId={parseInt(props.match.params.id)}/>;
                         }}/>
                         <Route path="/add">
-                            <Add/>
+                            <Add decks={this.state.decks}/>
                         </Route>
                     </Switch>
                     <BottomBar/>

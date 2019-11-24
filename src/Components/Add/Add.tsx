@@ -1,14 +1,32 @@
-import React from 'react';
-import {
-    Link
-} from "react-router-dom";
+import React from "react";
 
-import "./Add.css";
+import { Input, Select } from "antd";
 
-export default function Add() {
+import styles from "./Add.module.css";
+import { Deck } from "../../Lib/Storage";
+
+const { TextArea } = Input;
+const { Option } = Select;
+
+
+interface Props {
+    decks: Deck[]
+}
+
+export default function Add(props: Props) {
     return (
         <div>
-            Zde bude přidávání karet
+            <div className={styles.topbar}>
+                Add
+            </div>
+            <div className={styles.addView}>
+                <Select>
+                    {props.decks.map((deck) => {
+                        return (<Option value={deck.id.toString()}>{deck.name}</Option>);
+                    })}
+                </Select>
+                <TextArea placeholder={"Front"}/>
+            </div>
         </div>
     );
 }
