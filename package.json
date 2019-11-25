@@ -47,8 +47,16 @@
   },
   "devDependencies": {
     "@types/faker": "^4.1.7",
+    "create-react-component-folder": "^0.1.30",
     "gh-pages": "^2.1.1",
     "prettier": "^1.19.1",
     "tailwindcss": "^1.1.3"
-  }
+  },
+  "crcf": [
+    "typescript",
+    "cssmodules",
+    "createindex",
+    "notest",
+    "uppercase"
+  ]
 }
