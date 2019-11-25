@@ -18,7 +18,7 @@ export default function BottomBar() {
                 <img src={cardsIcon} alt="Cards"/>
                 <span>Cards</span>
             </Link>
-            <Link to={"/"}>
+            <Link to={"/profile"}>
                 <img src={profileIcon} alt="Profile"/>
                 <span>Profile</span>
             </Link>

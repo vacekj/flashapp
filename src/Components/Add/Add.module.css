@@ -7,3 +7,11 @@
     font-weight: 600;
     color: #323232;
 }
+
+.addView {
+    padding: 10px;
+}
+
+.deckSelect {
+    margin-bottom: 15px;
+}

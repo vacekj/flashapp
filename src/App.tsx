@@ -45,6 +45,9 @@ export default class App extends Component<{}, State> {
                         <Route path="/add">
                             <Add decks={this.state.decks}/>
                         </Route>
+                        <Route path="/profile">
+                            <Add decks={this.state.decks}/>
+                        </Route>
                     </Switch>
                     <BottomBar/>
                 </div>
