@@ -65,7 +65,7 @@ export async function seedDatabase() {
         await createDeck(
             {
                 id: deckId,
-                name: faker.random.word(),
+                name: faker.random.words(1),
                 description: faker.lorem.sentences(1)
             }
         );
