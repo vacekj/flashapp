@@ -3,7 +3,6 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    padding: 15px;
     background: #F7F8FC;
 }
 
@@ -22,7 +21,7 @@
 }
 
 .bottomBar > a > span {
-    display: none;
+    /*display: none;*/
 }
 
 .bottomBar > a > img {
