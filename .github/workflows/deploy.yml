@@ -9,7 +9,10 @@ jobs:
     - name: Build
       uses: borales/actions-yarn@v2.0.0
       with:
-          cmd: install build # will run `yarn install` command
+          cmd: install # will run `yarn install` command!
+    - uses: borales/actions-yarn@v2.0.0
+      with:
+          cmd: build # will run `yarn install` command
     - name: Deploy  
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
