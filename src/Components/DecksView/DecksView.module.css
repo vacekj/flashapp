@@ -1,18 +1,13 @@
-.topbar {
+.decksView {
+    height: 90vh;
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 20px;
-    font-size: 34px;
-    font-weight: 600;
-    color: #323232;
+    flex-direction: column;
 }
 
-.deckView {
+.decks {
     overflow: scroll;
-    height: 80vh;
+    height: 100%
 }
-
 
 a {
     text-decoration: none;

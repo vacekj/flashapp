@@ -1,13 +1,13 @@
 import React from "react";
 
-import styles from "./BottomBar.module.css";
+import styles from "./Bottombar.module.css";
 import { Link } from "react-router-dom";
 
 import homeIcon from "../../assets/home.svg";
 import profileIcon from "../../assets/profile.svg";
 import cardsIcon from "../../assets/deck.svg";
 
-export default function BottomBar() {
+export default function Bottombar() {
     return (
         <div className={styles.bottomBar}>
             <Link to={"/"}>

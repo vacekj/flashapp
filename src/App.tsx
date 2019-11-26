@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import Home from "./Components/Home";
-import BottomBar from "./Components/BottomBar";
+import Bottombar from "./Components/Bottombar";
 import Add from "./Components/Add";
 import "antd/dist/antd.css";
 
@@ -10,6 +9,7 @@ import Review from "./Components/Review";
 import { Deck, getDecks, seedDatabase } from "./Lib/Storage";
 
 import styles from "./App.module.css";
+import DecksView from "./Components/DecksView";
 
 interface State {
     decks: Deck[]
@@ -37,7 +37,7 @@ export default class App extends Component<{}, State> {
                 <div className={styles.main}>
                     <Switch>
                         <Route exact path="/">
-                            <Home decks={this.state.decks}/>
+                            <DecksView decks={this.state.decks}/>
                         </Route>
                         <Route path="/decks/:id" children={(props: { match: { params: { id: string } } }) => {
                             return <Review deckId={parseInt(props.match.params.id)}/>;
@@ -49,7 +49,7 @@ export default class App extends Component<{}, State> {
                             <Add decks={this.state.decks}/>
                         </Route>
                     </Switch>
-                    <BottomBar/>
+                    <Bottombar/>
                 </div>
             </Router>
         );

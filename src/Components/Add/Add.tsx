@@ -2,6 +2,7 @@ import React from "react";
 
 import { Form, Input, Select } from "antd";
 
+import Topbar from "../Topbar";
 import styles from "./Add.module.css";
 import { Deck } from "../../Lib/Storage";
 
@@ -14,8 +15,8 @@ interface Props {
 
 export default function Add(props: Props) {
     return (
-        <div>
-            <div className={styles.topbar}>Add cards</div>
+        <div className={styles.addContainer}>
+            <Topbar>Add cards</Topbar>
             <div className={styles.addView}>
                 <Form>
                     <div className={styles.deckSelect}>
