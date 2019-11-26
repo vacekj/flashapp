@@ -9,9 +9,7 @@ interface Props {
 
 export default function DeckCard(props: Props) {
     return (
-        <div className={styles.deckCard} style={{
-            background: `rgb(20, ${props.deck.id * 30}, 80)`
-        }}>
+        <div className={styles.deckCard}>
             <span className={styles.title}>{props.deck.name}</span>
             <div className={styles.lastSession}>{props.deck.description}</div>
         </div>
