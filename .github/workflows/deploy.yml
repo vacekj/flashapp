@@ -1,2 +1,19 @@
-- name: GitHub Pages Deploy
-  uses: maxheld83/ghpages@v0.2.1
+name: Build and Deploy
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      uses: borales/actions-yarn@v2.0.0
+      with:
+          cmd: install build # will run `yarn install` command
+    - name: Deploy  
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BASE_BRANCH: master # The branch the action should deploy from.
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: build # The folder the action should deploy.
