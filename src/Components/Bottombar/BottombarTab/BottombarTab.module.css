@@ -26,10 +26,11 @@ a.tab:not(.active) span {
 
 a.tab span {
     visibility: hidden;
-    color: black;
+    color: #526178;
     transition: 0.2s cubic-bezier(0.23, 1, 0.32, 1);;
 }
 
 a.tab img {
     height: 20px;
+    filter: invert(36%) sepia(16%) saturate(713%) hue-rotate(177deg) brightness(97%) contrast(90%);
 }
