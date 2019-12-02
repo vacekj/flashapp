@@ -35,8 +35,8 @@ const tabs: Tab[] = [
 export default function Bottombar(props: { match: string }) {
     return (
         <div className={styles.bottomBar}>
-            {tabs.map((tab) => {
-                return <BottombarTab link={tab.link} name={tab.name} icon={tab.icon} active={props.match == tab.link}/>;
+            {tabs.map((tab, i) => {
+                return <BottombarTab link={tab.link} name={tab.name} icon={tab.icon} active={props.match == tab.link} key={i}/>;
             })}
         </div>
     );

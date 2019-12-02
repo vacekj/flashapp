@@ -24,7 +24,7 @@ export default function Add(props: Props) {
                         <Select placeholder={"Select a deck"}>
                             {props.decks.map(deck => {
                                 return (
-                                    <Option value={deck.id.toString()}>
+                                    <Option value={deck.id.toString()} key={deck.id}>
                                         {deck.name}
                                     </Option>
                                 );

@@ -45,11 +45,9 @@ export default class Review extends React.Component<Props, State> {
                 />
 
                 <div className={styles.reviewContainer}>
-                    <div className={styles.deckContainer}>
-                        <React.Fragment>
-                            <DeckComponent/>
-                        </React.Fragment>
-                    </div>
+                    <React.Fragment>
+                        <DeckComponent/>
+                    </React.Fragment>
                 </div>
             </div>
         );
