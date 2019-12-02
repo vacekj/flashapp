@@ -14,7 +14,7 @@ const cards = [
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20, delay: i * 100 });
-const from = i => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
+const from = i => ({ x: 0, rot: 0, scale: 1.05, y: -1000 });
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) => `scale(${s})`;
 
@@ -31,7 +31,7 @@ export default function CreateDeck() {
 			const isGone = gone.has(index);
 			const x = isGone ? (200 + window.innerWidth) * dir : down ? xDelta : 0; // When a card is gone it flys out left or right, otherwise goes back to zero
 			const rot = xDelta / 100 + (isGone ? dir * 10 * velocity : 0); // How much the card tilts, flicking it harder makes it rotate faster
-			const scale = down ? 1.1 : 1; // Active cards lift up a bit
+			const scale = down ? 1.05 : 1; // Active cards lift up a bit
 			return {
 				x,
 				rot,

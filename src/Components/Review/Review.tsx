@@ -1,7 +1,6 @@
 import React from "react";
 
 import styles from "./Review.module.css";
-import "./Review.css";
 
 import ReviewTopbar from "./ReviewTopbar";
 import { Deck, getDeck } from "../../Lib/Storage";
@@ -38,7 +37,9 @@ export default class Review extends React.Component<Props, State> {
 
     render() {
         return (
-            <div>
+            <div style={{
+                height: "92vh"
+            }}>
                 <ReviewTopbar
                     progressIndicatorText={"15"}
                     deckName={this.state.deck.name}
