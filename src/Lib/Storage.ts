@@ -60,13 +60,14 @@ export interface Deck {
 export async function seedDatabase() {
     faker.locale = "cz";
     await lf.clear();
+
     /* Decks */
-    for (let deckId = 0; deckId < 10; deckId++) {
+    for (let deckId = 1; deckId < 10; deckId++) {
         await createDeck(
             {
                 id: deckId,
                 name: faker.random.words(1),
-                description: faker.lorem.sentences(1)
+                description: faker.random.words(3)
             }
         );
         for (let i = 0; i < 5; i++) {
