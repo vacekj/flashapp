@@ -29,6 +29,28 @@ export default function DeckCard(props: Props) {
                     maxValue={100}
                     width={60}
                     lineWidth={5}
+                    lineGap={0}
+                    stepsColors={[
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+                        "#2f54eb",
+
+                    ]}
                 />
             </div>
         </div>

@@ -5,9 +5,10 @@ import DeckCard from "./DeckCard";
 import { Link } from "react-router-dom";
 import { Deck } from "../../Lib/Storage";
 import Topbar from "../Topbar";
+import Card from "../Card";
 
 interface Props {
-    decks: Deck[]
+    decks: Deck[];
 }
 
 export default function DecksView(props: Props) {
@@ -15,15 +16,13 @@ export default function DecksView(props: Props) {
         <div className={styles.decksView}>
             <Topbar>Decks</Topbar>
             <div className={styles.decks}>
-                <DeckCard deck={{
-                    id: 0,
-                    name: "Welcome to FlashApp",
-                    description: "Click on a deck below to get started."
-                }} accent={true}/>
+                <Card accent={true} title={"Welcome to FlashApp"}>
+                    Click on a deck below to start your journey.
+                </Card>
                 {props.decks.map((deck, i) => {
                     return (
-                        <Link to={"/decks/" + deck.id} key={i}>
-                            <DeckCard deck={deck} key={deck.id}/>
+                        <Link className={styles.link} to={"/decks/" + deck.id} key={i}>
+                            <DeckCard deck={deck} key={deck.id} />
                         </Link>
                     );
                 })}
