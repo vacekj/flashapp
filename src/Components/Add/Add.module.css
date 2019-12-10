@@ -1,5 +1,6 @@
 .addView {
     padding: 10px;
+    font-size: 18px;
 }
 
 .addContainer {
@@ -8,6 +9,15 @@
     flex-direction: column;
 }
 
-.deckSelect {
-    margin-bottom: 15px;
+.deckSelectContainer {
+    width: 100%;
+}
+
+.deckLabel {
+    font-size: 18px;
+}
+
+.deckSelectText {
+    font-size: 1.3rem !important; /*TODO: we dont have to use important here*/
+    font-family: "Rubik", sans-serif !important;
 }
