@@ -12,12 +12,13 @@ a.tab {
 }
 
 a.tab.active {
-    filter: none;
+    filter: brightness(0) saturate(100%) invert(20%) sepia(81%) saturate(3288%) hue-rotate(228deg) brightness(98%) contrast(89%);
 }
 
 a.tab.active span {
     visibility: visible;
     height: 14px;
+    font-weight: bold;
 }
 
 a.tab:not(.active) span {
@@ -32,5 +33,5 @@ a.tab span {
 
 a.tab img {
     height: 20px;
-    filter: invert(36%)sepia(16%) saturate(713%) hue-rotate(177deg) brightness(97%) contrast(90%);
+    filter: invert(36%) sepia(16%) saturate(713%) hue-rotate(177deg) brightness(97%) contrast(90%);
 }
