@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Bottombar from "./Components/Bottombar";
-import Add from "./Components/Add";
+import Add from "./Components/AddView";
 import { BrowserRouter as Router, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";

@@ -1,6 +1,7 @@
 .addView {
     padding: 10px;
     font-size: 18px;
+    overflow: scroll;
 }
 
 .addContainer {
@@ -11,6 +12,12 @@
 
 .deckSelectContainer {
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.deckSelect {
+    width: 500px;
 }
 
 .deckLabel {
@@ -21,3 +28,11 @@
     font-size: 1.3rem !important; /*TODO: we dont have to use important here*/
     font-family: "Rubik", sans-serif !important;
 }
+
+.addCardContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap
+}
+

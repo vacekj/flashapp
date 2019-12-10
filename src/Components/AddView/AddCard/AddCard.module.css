@@ -1,0 +1,22 @@
+.addCard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 300px;
+    min-width: 300px;
+    min-height: 300px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+}
+
+.addCard textarea {
+    overflow: hidden;
+    width: 100%;
+    resize: none;
+    text-align: center;
+    border: none;
+    outline: none;
+    font-size: large;
+    font-family: Rubik, sans-serif;
+}
