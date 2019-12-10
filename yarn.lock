@@ -8695,6 +8695,11 @@ react-router@5.1.2:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
+react-score-indicator@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-score-indicator/-/react-score-indicator-2.1.1.tgz#725d04701ad951da22c8101b1abc515e3e62835b"
+  integrity sha512-AzYB/J8xQQvotMjrtlMBfkdOfN0Fgz8hGPU5z9u5KFK57MRLbpLJ+UOjR01bRq596l74o0C6+FxFLX3BS2BLSg==
+
 react-scripts@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-scripts/-/react-scripts-3.2.0.tgz#58ccd6b4ffa27f1b4d2986cbdcaa916660e9e33c"
