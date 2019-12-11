@@ -11,7 +11,7 @@
 }
 
 .deckSelectContainer {
-    width: 100%;
+    margin: 20px;
     display: flex;
     justify-content: center;
 }
@@ -34,5 +34,16 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap
+}
+
+.topbarFlex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.topbarFlex img {
+    height: 24px;
 }
 

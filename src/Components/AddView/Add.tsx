@@ -14,6 +14,8 @@ import { Deck } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
+import playIcon from "../../assets/play.svg";
+
 interface Props {
     decks: Deck[];
 }
@@ -21,7 +23,12 @@ interface Props {
 export default function Add(props: Props) {
     return (
         <div className={styles.addContainer}>
-            <Topbar>Add cards</Topbar>
+            <Topbar>
+                <div className={styles.topbarFlex}>
+                    <span> Add cards</span>
+                    <img src={playIcon} alt="Preview" />
+                </div>
+            </Topbar>
             <div className={styles.addView}>
                 <div className={styles.deckSelectContainer}>
                     <FormControl className={styles.deckSelect}>
