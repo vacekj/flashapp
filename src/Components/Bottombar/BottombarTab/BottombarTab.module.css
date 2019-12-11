@@ -32,6 +32,6 @@ a.tab span {
 }
 
 a.tab img {
-    height: 20px;
+    height: 24px;
     filter: invert(36%) sepia(16%) saturate(713%) hue-rotate(177deg) brightness(97%) contrast(90%);
 }
