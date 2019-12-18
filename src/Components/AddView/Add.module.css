@@ -44,6 +44,14 @@
 }
 
 .topbarFlex img {
-    height: 24px;
+    height: 30px;
+    margin-right: 0;
+    margin-left: 30px;
+}
+
+.iconsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 

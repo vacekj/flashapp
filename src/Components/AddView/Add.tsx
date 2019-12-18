@@ -25,8 +25,11 @@ export default function Add(props: Props) {
         <div className={styles.addContainer}>
             <Topbar>
                 <div className={styles.topbarFlex}>
-                    <span> Add cards</span>
-                    <img src={playIcon} alt="Preview" />
+                    <span>Add cards</span>
+                    <div className={styles.iconsContainer}>
+                        <img src={playIcon} alt="Preview" />
+                        <img src={playIcon} alt="Finish adding a card" />
+                    </div>
                 </div>
             </Topbar>
             <div className={styles.addView}>
