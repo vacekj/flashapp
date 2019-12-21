@@ -15,6 +15,7 @@ import { Deck } from "../../Lib/Storage";
 import styles from "./Add.module.css";
 
 import playIcon from "../../assets/play.svg";
+import addIcon from "../../assets/plus.svg";
 
 interface Props {
     decks: Deck[];
@@ -27,8 +28,8 @@ export default function Add(props: Props) {
                 <div className={styles.topbarFlex}>
                     <span>Add cards</span>
                     <div className={styles.iconsContainer}>
-                        <img src={playIcon} alt="Preview" />
-                        <img src={playIcon} alt="Finish adding a card" />
+                        <img src={playIcon} alt="Preview"/>
+                        <img src={addIcon} alt="Finish adding a card"/>
                     </div>
                 </div>
             </Topbar>
@@ -64,7 +65,7 @@ export default function Add(props: Props) {
                 </div>
 
                 <div className={styles.addCardContainer}>
-                    <AddCard placeholder={"Prompt"} />
+                    <AddCard placeholder={"Prompt"}/>
                     <Hidden smUp={true}>
                         <Divider
                             variant={"middle"}
@@ -74,7 +75,7 @@ export default function Add(props: Props) {
                         />
                     </Hidden>
 
-                    <AddCard placeholder={"Answer"} />
+                    <AddCard placeholder={"Answer"}/>
                 </div>
             </div>
         </div>
