@@ -35,6 +35,10 @@ export default class Review extends React.Component<Props, State> {
         });
     }
 
+    onSwipe({ index, direction }: { index: number, direction: number }) {
+        console.log(`Card swiped. Index: ${index} | Direction: ${direction}`);
+    }
+
     render() {
         return (
             <div style={{
@@ -47,7 +51,7 @@ export default class Review extends React.Component<Props, State> {
 
                 <div className={styles.reviewContainer}>
                     <React.Fragment>
-                        <DeckComponent/>
+                        <DeckComponent onSwipe={this.onSwipe.bind(this)}/>
                     </React.Fragment>
                 </div>
             </div>
