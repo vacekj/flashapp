@@ -32,7 +32,7 @@ export async function updateCard(card: Card) {
 
 export async function getCardsOfDeck(deckId: number) {
     const cards: Card[] = await lf.getItem("cards");
-    return cards.find((card) => card.deckId === deckId);
+    return cards ? cards.filter((card) => card.deckId === deckId) : [];
 }
 
 export async function getDecks(): Promise<Deck[]> {

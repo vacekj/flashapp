@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./Review.module.css";
 
 import ReviewTopbar from "./ReviewTopbar";
-import { Deck, getDeck } from "../../Lib/Storage";
+import { Deck, getDeck, getCardsOfDeck, Card } from "../../Lib/Storage";
 
 const DeckComponent = require("../Deck").default;
 
@@ -12,8 +12,15 @@ interface Props {
 }
 
 interface State {
-    deck: Deck
+    deck: Deck,
+    cards: Card[]
 }
+
+const noCards = [
+    {
+        front: ""
+    }
+];
 
 export default class Review extends React.Component<Props, State> {
     constructor(props: Props) {
@@ -23,14 +30,25 @@ export default class Review extends React.Component<Props, State> {
                 id: props.deckId,
                 name: "Loading",
                 description: "Loading..."
-            }
+            },
+            cards: [
+                {
+                    front: "Loading...",
+                    back: "Please wait",
+                    id: -1,
+                    deckId: -1
+                }
+            ]
         };
     }
 
     componentDidMount(): void {
         getDeck(this.state.deck.id).then((deck) => {
-            this.setState({
-                deck: deck
+            getCardsOfDeck(deck.id).then((cards) => {
+                this.setState({
+                    deck,
+                    cards: cards.length ? cards : []
+                });
             });
         });
     }
@@ -51,7 +69,7 @@ export default class Review extends React.Component<Props, State> {
 
                 <div className={styles.reviewContainer}>
                     <React.Fragment>
-                        <DeckComponent onSwipe={this.onSwipe.bind(this)}/>
+                        <DeckComponent onSwipe={this.onSwipe.bind(this)} cards={this.state.cards}/>
                     </React.Fragment>
                 </div>
             </div>

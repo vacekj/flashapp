@@ -1,0 +1,14 @@
+.front {
+    display: block;
+    padding: 3rem;
+}
+
+.back {
+    display: none;
+    padding: 3rem;
+}
+
+.flippedBack {
+    border-top: solid 1px #f5f5f5;
+    display: block;
+}
