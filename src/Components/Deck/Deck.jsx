@@ -11,12 +11,6 @@ const from = i => ({ x: 0, y: -1000, scale: 1.05, rot: 0 });
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) => `scale(${s})`;
 
-function onClick(event) {
-    event.persist();
-    console.log(event);
-    event.target.classList.add(styles.front);
-}
-
 export default function DeckWrapper(props) {
     if (props.cards.length === 0) {
         return <div className={styles.cardContainer}>No cards to review at the moment</div>;
@@ -90,7 +84,6 @@ function Deck(props) {
             {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
             <animated.div
                 className={styles.card}
-                onClick={onClick}
                 {...bind(i)}
                 style={{
                     transform: interpolate([rot, scale], trans)

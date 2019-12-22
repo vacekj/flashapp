@@ -17,17 +17,8 @@
     background-size: auto 85%;
     background-repeat: no-repeat;
     background-position: center center;
-    width: 95%;
-    height: 95%;
+    width: 90%;
     will-change: transform;
     border-radius: 10px;
     box-shadow: 0 0px 7px -1px rgba(0, 0, 0, 0.2);
-}
-
-.front {
-    display: block;
-}
-
-.back {
-    display: none;
 }

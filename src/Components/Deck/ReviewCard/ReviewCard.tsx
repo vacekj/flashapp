@@ -27,7 +27,7 @@ class ReviewCard extends React.Component<Props, State> {
 
     public render() {
         return (
-            <div onClick={this.onClick.bind(this)}>
+            <div onClick={this.onClick.bind(this)} className={styles.reviewCard}>
                 <div className={styles.front}>{this.props.front}</div>
                 <div
                     className={[

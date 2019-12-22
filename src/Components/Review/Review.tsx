@@ -16,12 +16,6 @@ interface State {
     cards: Card[]
 }
 
-const noCards = [
-    {
-        front: ""
-    }
-];
-
 export default class Review extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
