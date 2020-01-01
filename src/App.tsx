@@ -6,9 +6,6 @@ import styles from "./App.module.css";
 import Review from "./Components/Review";
 import { Deck, getDecks, seedDatabase } from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
-
-// import "antd/dist/antd.css";
-
 interface State {
     decks: Deck[];
 }

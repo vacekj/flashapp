@@ -20,5 +20,5 @@
     width: 90%;
     will-change: transform;
     border-radius: 10px;
-    box-shadow: 0 0px 7px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 7px -1px rgba(0, 0, 0, 0.2);
 }

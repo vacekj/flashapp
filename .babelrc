@@ -4,14 +4,6 @@
       "react-css-modules",
       {
       }
-    ],
-    [
-      "import",
-      {
-        "libraryName": "antd",
-
-        "style": "css"
-      }
     ]
   ]
 }

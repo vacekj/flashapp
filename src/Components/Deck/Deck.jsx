@@ -41,7 +41,8 @@ function Deck(props) {
             // If button/finger's up and trigger velocity is reached, we flag the card ready to fly out
             if (!down && trigger) {
                 gone.add(index);
-                props.onSwipe({ index, direction: dir });
+                props.onSwipe({ index, direction: dir, cardId: props.cards[index].id });
+                console.log(props.cards[index]);
             }
             set(i => {
                 if (index !== i) return; // We're only interested in changing spring-data for the current spring

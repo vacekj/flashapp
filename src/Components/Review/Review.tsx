@@ -12,8 +12,11 @@ interface Props {
 }
 
 interface State {
-    deck: Deck,
-    cards: Card[]
+    deck: Deck;
+    cards: Card[];
+}
+
+interface onSwipeArgs {
 }
 
 export default class Review extends React.Component<Props, State> {
@@ -37,8 +40,8 @@ export default class Review extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        getDeck(this.state.deck.id).then((deck) => {
-            getCardsOfDeck(deck.id).then((cards) => {
+        getDeck(this.state.deck.id).then(deck => {
+            getCardsOfDeck(deck.id).then(cards => {
                 this.setState({
                     deck,
                     cards: cards.length ? cards : []
@@ -47,15 +50,17 @@ export default class Review extends React.Component<Props, State> {
         });
     }
 
-    onSwipe({ index, direction }: { index: number, direction: number }) {
-        console.log(`Card swiped. Index: ${index} | Direction: ${direction}`);
+    onSwipe({ index, direction, cardId }: { index: number; direction: number, cardId: number }) {
+        console.log(`Card swiped. Index: ${index} | Direction: ${direction} | cardId: ${cardId}`);
     }
 
     render() {
         return (
-            <div style={{
-                height: "92vh"
-            }}>
+            <div
+                style={{
+                    height: "92vh"
+                }}
+            >
                 <ReviewTopbar
                     progressIndicatorText={"15"}
                     deckName={this.state.deck.name}
@@ -63,7 +68,10 @@ export default class Review extends React.Component<Props, State> {
 
                 <div className={styles.reviewContainer}>
                     <React.Fragment>
-                        <DeckComponent onSwipe={this.onSwipe.bind(this)} cards={this.state.cards}/>
+                        <DeckComponent
+                            onSwipe={this.onSwipe.bind(this)}
+                            cards={this.state.cards}
+                        />
                     </React.Fragment>
                 </div>
             </div>
