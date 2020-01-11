@@ -18,6 +18,21 @@ a {
     text-decoration: none;
 }
 
+.noDecks {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin: 15px;
+    padding: 20px;
+
+    color: #707994;
+
+    border-radius: 5px;
+    text-align: center;
+}
+
 .skeletonCard {
     display: flex;
     align-items: stretch;

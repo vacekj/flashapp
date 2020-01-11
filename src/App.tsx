@@ -44,13 +44,13 @@ export default class App extends Component<{}, State> {
 	}
 
 	componentDidMount() {
-		// seedDatabase().then(async () => {
-		// 	const decks = await getDecks();
-		// 	this.setState({
-		// 		decks: decks
-		// 	});
-		// });
-		this.setState({ decks: [] });
+		seedDatabase().then(async () => {
+			const decks = await getDecks();
+			this.setState({
+				decks: decks
+			});
+		});
+		// this.setState({ decks: [] });
 	}
 
 	render() {

@@ -60,7 +60,7 @@ export default class DecksView extends React.Component<Props, State> {
 	}
 
 	renderDecks(decks: Deck[]) {
-		return decks.length > 0 ?
+		return decks.length > 0 ? (
 			decks.map((deck, i) => {
 				return (
 					<Link className={styles.link} to={"/decks/" + deck.id} key={i}>
@@ -68,9 +68,9 @@ export default class DecksView extends React.Component<Props, State> {
 					</Link>
 				);
 			})
-			: (
-				<div>No decks</div>
-			);
+		) : (
+			<div className={styles.noDecks}>I see no decks. Why not add one using the button below?</div>
+		);
 	}
 
 	render() {
@@ -84,9 +84,6 @@ export default class DecksView extends React.Component<Props, State> {
 				<div className={styles.decksView}>
 					<Topbar>Decks</Topbar>
 					<div className={styles.decks}>
-						<Card accent={true} title={"Welcome to FlashApp"}>
-							Click on a deck below to start your journey.
-						</Card>
 						{this.props.decks !== null ? (
 							this.renderDecks(this.props.decks)
 						) : (
