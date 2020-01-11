@@ -17,3 +17,18 @@
 a {
     text-decoration: none;
 }
+
+.skeletonCard {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    justify-content: space-between;
+
+    margin: 15px;
+    padding: 20px;
+
+    background: white;
+    color: #3E465E;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 5px 5px 5px 5px;
+}

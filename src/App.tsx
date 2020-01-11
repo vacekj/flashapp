@@ -9,13 +9,13 @@ import DecksView from "./Components/DecksView";
 import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
 
 interface State {
-	decks: Deck[];
+	decks: Deck[] | null;
 }
 
 export default class App extends Component<{}, State> {
 	constructor(props: any) {
 		super(props);
-		this.state = { decks: [] };
+		this.state = { decks: null };
 
 		// First we get the viewport height and we multiple it by 1% to get a value for a vh unit
 		let vh = window.innerHeight * 0.01;
@@ -44,12 +44,13 @@ export default class App extends Component<{}, State> {
 	}
 
 	componentDidMount() {
-		seedDatabase().then(async () => {
-			const decks = await getDecks();
-			this.setState({
-				decks: decks
-			});
-		});
+		// seedDatabase().then(async () => {
+		// 	const decks = await getDecks();
+		// 	this.setState({
+		// 		decks: decks
+		// 	});
+		// });
+		this.setState({ decks: [] });
 	}
 
 	render() {
@@ -89,7 +90,7 @@ export default class App extends Component<{}, State> {
 						children={(props: RouteComponentProps) => {
 							return (
 								<div className={styles.main}>
-									<Add decks={this.state.decks}/>
+									<Add decks={this.state.decks ?? []}/>
 									<Bottombar match={props.match.path}/>
 								</div>
 							);
@@ -100,7 +101,7 @@ export default class App extends Component<{}, State> {
 						children={(props: RouteComponentProps) => {
 							return (
 								<div className={styles.main}>
-									<Add decks={this.state.decks}/>
+									<Add decks={this.state.decks ?? []}/>
 									<Bottombar match={props.match.path}/>
 								</div>
 							);

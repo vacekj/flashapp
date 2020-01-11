@@ -9,6 +9,7 @@ import Card from "../Card";
 import PlusIcon from "../../assets/plus.svg";
 import AddDeckDialog from "../AddDeckDialog";
 import { NewDeck } from "../AddDeckDialog/AddDeckDialog";
+import { Skeleton } from "@material-ui/lab";
 
 function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>) => void }) {
 	return (
@@ -30,7 +31,7 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 }
 
 interface Props {
-	decks: Deck[];
+	decks: Deck[] | null;
 	addDeckHandler: (newDeck: NewDeck) => void;
 }
 
@@ -58,6 +59,20 @@ export default class DecksView extends React.Component<Props, State> {
 		});
 	}
 
+	renderDecks(decks: Deck[]) {
+		return decks.length > 0 ?
+			decks.map((deck, i) => {
+				return (
+					<Link className={styles.link} to={"/decks/" + deck.id} key={i}>
+						<DeckCard deck={deck} key={deck.id}/>
+					</Link>
+				);
+			})
+			: (
+				<div>No decks</div>
+			);
+	}
+
 	render() {
 		return (
 			<>
@@ -72,13 +87,14 @@ export default class DecksView extends React.Component<Props, State> {
 						<Card accent={true} title={"Welcome to FlashApp"}>
 							Click on a deck below to start your journey.
 						</Card>
-						{this.props.decks.map((deck, i) => {
-							return (
-								<Link className={styles.link} to={"/decks/" + deck.id} key={i}>
-									<DeckCard deck={deck} key={deck.id}/>
-								</Link>
-							);
-						})}
+						{this.props.decks !== null ? (
+							this.renderDecks(this.props.decks)
+						) : (
+							<div className={styles.skeletonCard}>
+								<Skeleton variant="text" height={30} width={120}/>
+								<Skeleton variant="text" width={300}/>
+							</div>
+						)}
 						<AddDeckCard onClick={this.openDialog.bind(this)}/>
 					</div>
 				</div>
