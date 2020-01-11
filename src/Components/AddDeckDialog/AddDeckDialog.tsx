@@ -1,6 +1,15 @@
 import * as React from "react";
 import { useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, makeStyles, TextField } from "@material-ui/core";
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	makeStyles,
+	TextField
+} from "@material-ui/core";
+import Save from "@material-ui/icons/Save";
 
 export interface NewDeck {
 	name: string;
@@ -27,10 +36,7 @@ const AddDeckDialog = (props: Props) => {
 	const styles = useStyles();
 
 	return (
-		<Dialog
-			open={props.open}
-			onClose={props.onClose}
-		>
+		<Dialog open={props.open} onClose={props.onClose}>
 			<DialogTitle>Create a new deck</DialogTitle>
 			<DialogContent>
 				<TextField
@@ -40,7 +46,7 @@ const AddDeckDialog = (props: Props) => {
 					label="Deck name"
 					fullWidth
 					autoComplete={"off"}
-					onChange={(e) => {
+					onChange={e => {
 						setState({
 							...state,
 							name: e.target.value
@@ -53,7 +59,7 @@ const AddDeckDialog = (props: Props) => {
 					id="description"
 					label="Deck description"
 					fullWidth
-					onChange={(e) => {
+					onChange={e => {
 						setState({
 							...state,
 							description: e.target.value
@@ -62,14 +68,25 @@ const AddDeckDialog = (props: Props) => {
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={props.onClose} classes={{
-					label: styles.label
-				}} color="primary">
+				<Button
+					onClick={props.onClose}
+					classes={{
+						label: styles.label
+					}}
+					color="primary"
+				>
 					Cancel
 				</Button>
-				<Button onClick={() => {
-					props.onSave(state);
-				}} color="primary">
+				<Button
+					onClick={() => {
+						props.onClose();
+						props.onSave(state);
+					}}
+					color="primary"
+					variant={"contained"}
+					endIcon={<Save/>}
+					disabled={state.name.length < 1}
+				>
 					Save deck
 				</Button>
 			</DialogActions>
