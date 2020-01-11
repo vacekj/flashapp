@@ -4,8 +4,9 @@ import Add from "./Components/AddView";
 import { BrowserRouter as Router, Route, RouteComponentProps, Switch } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
-import { Deck, getDecks, seedDatabase } from "./Lib/Storage";
+import { createDeck, Deck, getDecks, seedDatabase } from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
+import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
 
 interface State {
 	decks: Deck[];
@@ -23,11 +24,23 @@ export default class App extends Component<{}, State> {
 		document.documentElement.style.setProperty("--vh", `${vh}px`);
 
 		// We listen to the resize event
-		// window.addEventListener("resize", () => {
-		//     // We execute the same script as before
-		//     let vh = window.innerHeight * 0.01;
-		//     document.documentElement.style.setProperty("--vh", `${vh}px`);
-		// });
+		window.addEventListener("resize", () => {
+			// We execute the same script as before
+			let vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty("--vh", `${vh}px`);
+		});
+	}
+
+	async onAddDeck({ name, description }: NewDeck) {
+		await createDeck({
+			name: name,
+			description: description ?? "",
+			id: Math.floor(Math.random() * 1000)
+		});
+		const decks = await getDecks();
+		this.setState({
+			decks: decks
+		});
 	}
 
 	componentDidMount() {
@@ -50,8 +63,8 @@ export default class App extends Component<{}, State> {
 						children={(props: RouteComponentProps) => {
 							return (
 								<div className={styles.main}>
-									<DecksView decks={this.state.decks} />
-									<Bottombar match={props.match.path} />
+									<DecksView decks={this.state.decks} addDeckHandler={this.onAddDeck.bind(this)}/>
+									<Bottombar match={props.match.path}/>
 								</div>
 							);
 						}}
@@ -65,8 +78,8 @@ export default class App extends Component<{}, State> {
 						) => {
 							return (
 								<div className={styles.main}>
-									<Review deckId={parseInt(props.match.params.id)} />
-									<Bottombar match={props.match.path} />
+									<Review deckId={parseInt(props.match.params.id)}/>
+									<Bottombar match={props.match.path}/>
 								</div>
 							);
 						}}
@@ -76,8 +89,8 @@ export default class App extends Component<{}, State> {
 						children={(props: RouteComponentProps) => {
 							return (
 								<div className={styles.main}>
-									<Add decks={this.state.decks} />
-									<Bottombar match={props.match.path} />
+									<Add decks={this.state.decks}/>
+									<Bottombar match={props.match.path}/>
 								</div>
 							);
 						}}
@@ -87,8 +100,8 @@ export default class App extends Component<{}, State> {
 						children={(props: RouteComponentProps) => {
 							return (
 								<div className={styles.main}>
-									<Add decks={this.state.decks} />
-									<Bottombar match={props.match.path} />
+									<Add decks={this.state.decks}/>
+									<Bottombar match={props.match.path}/>
 								</div>
 							);
 						}}

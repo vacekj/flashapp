@@ -1,6 +1,4 @@
 import React from "react";
-// @ts-ignore
-import ReactStoreIndicator from "react-score-indicator";
 import styles from "./DeckCard.module.css";
 import { Deck } from "../../../Lib/Storage";
 

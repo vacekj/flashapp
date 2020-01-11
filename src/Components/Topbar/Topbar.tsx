@@ -2,7 +2,6 @@ import * as React from "react";
 import styles from "./Topbar.module.css";
 
 import logo from "../../assets/deck.svg";
-import { log } from "util";
 
 class Topbar extends React.Component<any, any> {
     public render() {

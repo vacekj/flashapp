@@ -13,7 +13,7 @@ export async function createDeck(deck: Deck) {
 
 export async function updateDeck(deck: Deck) {
 	const decks = await getDecks();
-	const deckToUpdate = decks.find((d) => d.id == deck.id);
+	const deckToUpdate = decks.find((d) => d.id === deck.id);
 	const splicedDecks = decks.splice(decks.indexOf(deckToUpdate as Deck), 1);
 	return lf.setItem("decks", [...splicedDecks, deck]);
 }
@@ -25,7 +25,7 @@ export async function createCard(card: Card) {
 
 export async function updateCard(card: Card) {
 	const cards = await getCards();
-	const cardToUpdate = cards.find((d) => d.id == card.id);
+	const cardToUpdate = cards.find((d) => d.id === card.id);
 	const splicedCards = cards.splice(cards.indexOf(cardToUpdate as Card), 1);
 	return lf.setItem("cards", [...splicedCards, card]);
 }
