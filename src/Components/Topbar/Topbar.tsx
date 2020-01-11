@@ -2,16 +2,15 @@ import * as React from "react";
 import styles from "./Topbar.module.css";
 
 import logo from "../../assets/deck.svg";
+import { ComponentProps } from "react";
 
-class Topbar extends React.Component<any, any> {
-    public render() {
-        return (
-            <div className={styles.topbar}>
-                <img src={logo} alt="FlashApp Logo"/>
-                {this.props.children}
-            </div>
-        );
-    }
+function Topbar(props: ComponentProps<"div">) {
+	return (
+		<div className={styles.topbar} {...props}>
+			<img src={logo} alt="FlashApp Logo"/>
+			{props.children}
+		</div>
+	);
 }
 
 export default Topbar;

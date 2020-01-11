@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,26 +10,72 @@ import Hidden from "@material-ui/core/Hidden";
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import { Deck } from "../../Lib/Storage";
+import { createCard, Deck } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
-import playIcon from "../../assets/play.svg";
-import addIcon from "../../assets/plus.svg";
+import NoteAddRoundedIcon from "@material-ui/icons/NoteAddRounded";
+import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
+import { createStyles, IconButton, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+	root: { color: "black" },
+	colorDisabled: { color: "grey", background: "red" }
+});
 
 interface Props {
 	decks: Deck[];
 }
 
+interface State {
+	selectedDeckId: number | null;
+	front: string;
+	back: string;
+	previewing: boolean;
+}
+
 export default function Add(props: Props) {
+	const [state, setState] = useState<State>({
+		selectedDeckId: null,
+		front: "",
+		back: "",
+		previewing: false
+	});
+
+	const classes = useStyles();
+
 	return (
 		<div className={styles.addContainer}>
-			<Topbar>
+			<Topbar
+				style={{
+					padding: "0 0 0 12px"
+				}}
+			>
 				<div className={styles.topbarFlex}>
 					<span>Add cards</span>
 					<div className={styles.iconsContainer}>
-						<img src={playIcon} alt="Preview"/>
-						<img src={addIcon} alt="Finish adding a card"/>
+						<IconButton disabled={(state.front.length + state.back.length) < 1}>
+							<PlayArrowRoundedIcon fontSize={"large"}/>
+						</IconButton>
+						<IconButton
+							disabled={state.selectedDeckId === null || state.front.length < 1 || state.back.length < 1}
+							onClick={async () => {
+								await createCard({
+									front: state.front,
+									back: state.back,
+									deckId: state.selectedDeckId as number,
+									id: Math.floor(Math.random() * 10000)
+								});
+							}}
+							classes={{
+								root: classes.root,
+								disabled: classes.colorDisabled
+							}}
+						>
+							<NoteAddRoundedIcon
+								fontSize={"large"}
+							/>
+						</IconButton>
 					</div>
 				</div>
 			</Topbar>
@@ -46,16 +92,19 @@ export default function Add(props: Props) {
 							displayEmpty={true}
 							autoWidth={true}
 							defaultValue={""}
+							onChange={e => {
+								setState({
+									...state,
+									selectedDeckId: parseInt(e.target.value as string)
+								});
+							}}
 						>
 							<MenuItem value="" disabled>
 								Select a deck
 							</MenuItem>
-							{props.decks.map(deck => {
+							{props.decks.map((deck, i) => {
 								return (
-									<MenuItem
-										value={deck.id.toString()}
-										key={deck.id}
-									>
+									<MenuItem value={deck.id.toString()} key={deck.id}>
 										{deck.name}
 									</MenuItem>
 								);
@@ -65,7 +114,16 @@ export default function Add(props: Props) {
 				</div>
 
 				<div className={styles.addCardContainer}>
-					<AddCard placeholder={"Prompt"}/>
+					<AddCard
+						placeholder={"Prompt"}
+						onChange={(text: string) => {
+							setState({
+								...state,
+								front: text
+							});
+						}}
+					/>
+
 					<Hidden smUp={true}>
 						<Divider
 							variant={"middle"}
@@ -75,7 +133,15 @@ export default function Add(props: Props) {
 						/>
 					</Hidden>
 
-					<AddCard placeholder={"Answer"}/>
+					<AddCard
+						placeholder={"Answer"}
+						onChange={(text: string) => {
+							setState({
+								...state,
+								back: text
+							});
+						}}
+					/>
 				</div>
 			</div>
 		</div>
