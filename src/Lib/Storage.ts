@@ -1,94 +1,160 @@
 import * as lf from "localforage";
 import faker from "faker";
+import firebase, {firestore} from "firebase";
 
-export async function getDeck(id: number): Promise<Deck> {
-	const decks: Deck[] = await lf.getItem("decks");
-	return decks.find((deck) => deck.id === id) as Deck;
+export default class StorageHandler {
+	private firebase: firebase.app.App;
+	private db: firebase.firestore.Firestore;
+	private static DECKS_COLLECTION = "decks";
+	private static CARDS_COLLECTION = "cards";
+
+	constructor(firebase: firebase.app.App) {
+		this.firebase = firebase;
+		this.db = this.firebase.firestore();
+	}
+
+	private static getTimeStamp(date: Date) {
+		return firebase.firestore.Timestamp.fromDate(date);
+	}
+
+	async createDeck(deck: DeckToSave) {
+		const doc: Omit<Deck, "uid"> = {
+			...deck,
+			createdAt: StorageHandler.getTimeStamp(new Date()),
+			updatedAt: StorageHandler.getTimeStamp(new Date()),
+			ownerUid: this.firebase.auth().currentUser?.uid as string
+		};
+		return (await this.db
+			.collection(StorageHandler.DECKS_COLLECTION)
+			.add(doc)) as firestore.DocumentReference<Deck>;
+	}
+
+	async deleteDeck(deckUid: string) {
+		return await this.db
+			.collection(StorageHandler.DECKS_COLLECTION)
+			.doc(deckUid)
+			.update({
+				deleted: true
+			});
+	}
+
+	async getDeckByUid(deckUid: string) {
+		return (await this.db
+			.collection(StorageHandler.DECKS_COLLECTION)
+			.doc(deckUid)
+			.get()) as firestore.DocumentSnapshot<Deck>;
+	}
+
+	async getDecksOfUser(userUid: string) {
+		const res = await this.db
+			.collection(StorageHandler.DECKS_COLLECTION)
+			.where("ownerUid", "==", userUid)
+			.get();
+		return res.docs
+			.map(snapshot => {
+				return snapshot.data(); /*TODO: does this return uid as well?*/
+			})
+			.filter(data => data.deleted !== true) as Deck[];
+	}
+
+	async getDecksOfCurrentUser() {
+		const res = await this.db
+			.collection(StorageHandler.DECKS_COLLECTION)
+			.where("ownerUid", "==", this.firebase.auth().currentUser?.uid)
+			.get();
+		return res.docs
+			.map(snapshot => {
+				return snapshot.data(); /*TODO: does this return uid as well?*/
+			})
+			.filter(data => data.deleted !== true) as Deck[];
+	}
+
+	async getCardsOfDeck(deckUid: string) {
+		const res = await this.db
+			.collection(StorageHandler.CARDS_COLLECTION)
+			.where("deckUid", "==", deckUid)
+			.get();
+		return res.docs
+			.map(snapshot => {
+				return snapshot.data(); /*TODO: does this return uid as well?*/
+			})
+			.filter(card => card.deleted !== true) as Card[];
+	}
+
+	async createCard(card: CardToAdd) {
+		const doc: Omit<Card, "uid"> = {
+			...card,
+			createdAt: StorageHandler.getTimeStamp(new Date()),
+			updatedAt: StorageHandler.getTimeStamp(new Date())
+		};
+		return (await this.db
+			.collection(StorageHandler.CARDS_COLLECTION)
+			.add(doc)) as firestore.DocumentReference<Card>;
+	}
+
+	async updateCard(card: CardToEdit) {
+		const doc:
+			| Omit<Card, "uid" | "deckUid">
+			| {
+			front?: string;
+			back?: string;
+		} = {
+			...card,
+			updatedAt: StorageHandler.getTimeStamp(new Date())
+		};
+		return await this.db
+			.collection(StorageHandler.CARDS_COLLECTION)
+			.doc(card.uid)
+			.update(doc);
+	}
+
+	async deleteCard(cardUid: string) {
+		return await this.db
+			.collection(StorageHandler.CARDS_COLLECTION)
+			.doc(cardUid)
+			.update({
+				deleted: true
+			});
+	}
 }
 
-export async function createDeck(deck: Deck) {
-	const decks = await getDecks();
-	return lf.setItem("decks", decks ? [...decks, deck] : [deck]);
+export type CardToEdit = {
+	uid: string;
+} & (
+	| {
+	front: string;
 }
-
-export async function updateDeck(deck: Deck) {
-	const decks = await getDecks();
-	const deckToUpdate = decks.find((d) => d.id === deck.id);
-	const splicedDecks = decks.splice(decks.indexOf(deckToUpdate as Deck), 1);
-	return lf.setItem("decks", [...splicedDecks, deck]);
+	| {
+	back: string;
 }
-
-export async function createCard(card: Card) {
-	const cards: Card[] = await lf.getItem("cards");
-	return lf.setItem("cards", cards ? [...cards, card] : [card]);
-}
-
-export async function updateCard(card: Card) {
-	const cards = await getCards();
-	const cardToUpdate = cards.find((d) => d.id === card.id);
-	const splicedCards = cards.splice(cards.indexOf(cardToUpdate as Card), 1);
-	return lf.setItem("cards", [...splicedCards, card]);
-}
-
-export async function removeCard(cardId: number) {
-	const cards = await getCards();
-	const cardToUpdate = cards.find((d) => d.id === cardId);
-	const splicedCards = cards.splice(cards.indexOf(cardToUpdate as Card), 1);
-	return lf.setItem("cards", [...splicedCards]);
-}
-
-export async function getCardsOfDeck(deckId: number) {
-	const cards: Card[] = await lf.getItem("cards");
-	return cards ? cards.filter((card) => card.deckId === deckId) : [];
-}
-
-export async function getDecks(): Promise<Deck[]> {
-	return lf.getItem("decks");
-}
-
-export async function getCards(): Promise<Card[]> {
-	return lf.getItem("cards");
-}
-
-
-export interface Card {
-	id: number;
-	deckId: number;
+	| {
 	front: string;
 	back: string;
-	createdAt?: Date;
-	updatedAt?: Date;
+}
+	);
+
+export interface CardToAdd {
+	front: string;
+	back: string;
+	deckUid: string;
 }
 
-export interface Deck {
-	id: number;
+export interface Card extends CardToAdd {
+	uid: string;
+	createdAt?: firebase.firestore.Timestamp;
+	updatedAt?: firebase.firestore.Timestamp;
+}
+
+export interface DeckToSave {
 	name: string;
 	description: string;
-	createdAt?: Date;
-	updatedAt?: Date;
-	lastAdditionAt?: Date;
 }
 
-export async function seedDatabase() {
-	faker.locale = "cz";
-	await lf.clear();
-
-	/* Decks */
-	for (let deckId = 1; deckId < 2; deckId++) {
-		await createDeck(
-			{
-				id: deckId,
-				name: faker.random.words(1),
-				description: faker.random.words(3)
-			}
-		);
-		for (let i = 0; i < 5; i++) {
-			await createCard({
-				id: i,
-				deckId: deckId,
-				front: faker.lorem.sentences(1),
-				back: faker.lorem.sentences(1)
-			});
-		}
-	}
+export interface Deck extends DeckToSave {
+	uid: string;
+	ownerUid: string;
+	createdAt: firebase.firestore.Timestamp;
+	updatedAt: firebase.firestore.Timestamp;
+	lastAdditionAt?: firebase.firestore.Timestamp;
+	deleted?: boolean;
 }

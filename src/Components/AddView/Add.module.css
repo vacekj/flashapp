@@ -24,7 +24,7 @@
 }
 
 .deckSelectText {
-    font-size: 1.3rem !important; /*TODO: we dont have to use important here*/
+    font-size: 1.3rem;
     font-family: "Rubik", sans-serif !important;
 }
 

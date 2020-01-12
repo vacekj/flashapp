@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,7 +10,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import { Card, createCard, Deck, removeCard } from "../../Lib/Storage";
+import StorageHandler, {Card, CardToAdd, Deck} from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
@@ -18,13 +18,14 @@ import NoteAddRoundedIcon from "@material-ui/icons/NoteAddRounded";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
-import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
+import {Button, Dialog, IconButton, makeStyles, Snackbar} from "@material-ui/core";
+import firebase from "firebase";
 
 const DeckComponent = require("../Deck").default;
 
 const useStyles = makeStyles({
-	root: { color: "black" },
-	colorDisabled: { color: "grey", background: "red" },
+	root: {color: "black"},
+	colorDisabled: {color: "grey", background: "red"},
 	closeButton: {
 		position: "absolute",
 		right: 0,
@@ -34,23 +35,24 @@ const useStyles = makeStyles({
 
 interface Props {
 	decks: Deck[];
+	storageHandler: StorageHandler;
 }
 
 interface State {
-	selectedDeckId: number | null;
+	selectedDeckUid: string | null;
 	front: string;
 	back: string;
 	previewing: boolean;
 }
 
 export default function Add(props: Props) {
-	const [previousCard, setPreviousCard] = useState<{ front: string, back: string, id: number }>({
+	const [previousCard, setPreviousCard] = useState<{ front: string, back: string, uid: string }>({
 		front: "",
 		back: "",
-		id: -1
+		uid: ""
 	});
 	const [state, setState] = useState<State>({
-		selectedDeckId: null,
+		selectedDeckUid: null,
 		front: "",
 		back: "",
 		previewing: false
@@ -64,16 +66,16 @@ export default function Add(props: Props) {
 		<>
 			<Dialog
 				open={state.previewing}
-				onClose={() => setState({ ...state, previewing: false })}
+				onClose={() => setState({...state, previewing: false})}
 				fullScreen
 			>
 				<IconButton
 					classes={{
 						root: classes.closeButton
 					}}
-					onClick={() => setState({ ...state, previewing: false })}
+					onClick={() => setState({...state, previewing: false})}
 				>
-					<CloseRoundedIcon fontSize={"large"}/>
+					<CloseRoundedIcon fontSize={"large"} />
 				</IconButton>
 				<DeckComponent
 					cards={[
@@ -108,12 +110,12 @@ export default function Add(props: Props) {
 								front: previousCard.front,
 								back: previousCard.back
 							});
-							await removeCard(previousCard.id);
+							await props.storageHandler.deleteCard(previousCard.uid);
 						}}
 						style={{
 							color: "orange"
 						}}
-						endIcon={<UndoRoundedIcon/>}
+						endIcon={<UndoRoundedIcon />}
 					>
 						Undo
 					</Button>
@@ -130,25 +132,27 @@ export default function Add(props: Props) {
 						<div className={styles.iconsContainer}>
 							<IconButton
 								disabled={state.front.length + state.back.length < 1}
-								onClick={() => setState({ ...state, previewing: true })}
+								onClick={() => setState({...state, previewing: true})}
 							>
-								<PlayArrowRoundedIcon fontSize={"large"}/>
+								<PlayArrowRoundedIcon fontSize={"large"} />
 							</IconButton>
 							<IconButton
 								disabled={
-									state.selectedDeckId === null ||
+									state.selectedDeckUid === null ||
 									state.front.length < 1 ||
 									state.back.length < 1
 								}
 								onClick={async () => {
-									const card: Card = {
+									if (state.selectedDeckUid === null) {
+										return false;
+									}
+									const card: CardToAdd = {
 										front: state.front,
 										back: state.back,
-										deckId: state.selectedDeckId as number,
-										id: Math.floor(Math.random() * 10000)
+										deckUid: state.selectedDeckUid
 									};
-									setPreviousCard(card);
-									await createCard(card);
+									const addedCardRef = await props.storageHandler.createCard(card);
+									setPreviousCard((await addedCardRef.get()).data() as Card);
 									setState({
 										...state,
 										front: "",
@@ -162,7 +166,7 @@ export default function Add(props: Props) {
 									disabled: classes.colorDisabled
 								}}
 							>
-								<NoteAddRoundedIcon fontSize={"large"}/>
+								<NoteAddRoundedIcon fontSize={"large"} />
 							</IconButton>
 						</div>
 					</div>
@@ -183,7 +187,7 @@ export default function Add(props: Props) {
 								onChange={e => {
 									setState({
 										...state,
-										selectedDeckId: parseInt(e.target.value as string)
+										selectedDeckUid: e.target.value as string
 									});
 								}}
 							>
@@ -192,7 +196,7 @@ export default function Add(props: Props) {
 								</MenuItem>
 								{props.decks.map(deck => {
 									return (
-										<MenuItem value={deck.id.toString()} key={deck.id}>
+										<MenuItem value={deck.uid} key={deck.uid}>
 											{deck.name}
 										</MenuItem>
 									);

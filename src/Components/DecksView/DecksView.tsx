@@ -2,13 +2,13 @@ import React from "react";
 
 import styles from "./DecksView.module.css";
 import DeckCard from "./DeckCard";
-import { Link } from "react-router-dom";
-import { Deck } from "../../Lib/Storage";
+import {Link} from "react-router-dom";
+import {Deck} from "../../Lib/Storage";
 import Topbar from "../Topbar";
 import PlusIcon from "../../assets/plus.svg";
 import AddDeckDialog from "../AddDeckDialog";
-import { NewDeck } from "../AddDeckDialog/AddDeckDialog";
-import { Skeleton } from "@material-ui/lab";
+import {NewDeck} from "../AddDeckDialog/AddDeckDialog";
+import {Skeleton} from "@material-ui/lab";
 
 function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>) => void }) {
 	return (
@@ -24,7 +24,7 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 			}}
 			onClick={props.onClick}
 		>
-			<img src={PlusIcon} alt={"Add deck icon"}/>
+			<img src={PlusIcon} alt={"Add deck icon"} />
 		</div>
 	);
 }
@@ -62,8 +62,8 @@ export default class DecksView extends React.Component<Props, State> {
 		return decks.length > 0 ? (
 			decks.map((deck, i) => {
 				return (
-					<Link className={styles.link} to={"/decks/" + deck.id} key={i}>
-						<DeckCard deck={deck} key={deck.id}/>
+					<Link className={styles.link} to={"/decks/" + deck.uid} key={i}>
+						<DeckCard deck={deck} key={deck.uid} />
 					</Link>
 				);
 			})
@@ -87,11 +87,11 @@ export default class DecksView extends React.Component<Props, State> {
 							this.renderDecks(this.props.decks)
 						) : (
 							<div className={styles.skeletonCard}>
-								<Skeleton variant="text" height={30} width={120}/>
-								<Skeleton variant="text" width={300}/>
+								<Skeleton variant="text" height={30} width={120} />
+								<Skeleton variant="text" width={300} />
 							</div>
 						)}
-						<AddDeckCard onClick={this.openDialog.bind(this)}/>
+						<AddDeckCard onClick={this.openDialog.bind(this)} />
 					</div>
 				</div>
 			</>

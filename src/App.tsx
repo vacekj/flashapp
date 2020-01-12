@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Bottombar from "./Components/Bottombar";
 import Add from "./Components/AddView";
 import {
@@ -10,9 +10,9 @@ import {
 } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
-import { createDeck, Deck, getDecks, seedDatabase } from "./Lib/Storage";
+import StorageHandler, {Deck} from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
-import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
+import {NewDeck} from "./Components/AddDeckDialog/AddDeckDialog";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import * as firebase from "firebase";
 import Profile from "./Components/Profile";
@@ -21,6 +21,7 @@ interface State {
 	decks: Deck[] | null;
 	firebase: firebase.app.App;
 	user?: firebase.User | null;
+	storageHandler: StorageHandler;
 }
 
 export default class App extends Component<{}, State> {
@@ -38,12 +39,15 @@ export default class App extends Component<{}, State> {
 			measurementId: "G-1CCSX7MC9F"
 		};
 
-		const app = firebase.initializeApp(firebaseConfig);
-		app.analytics();
+		if (!firebase.apps.length) {
+			firebase.initializeApp(firebaseConfig);
+		}
+		firebase.app().analytics();
 
 		this.state = {
 			decks: null,
-			firebase: app
+			firebase: firebase.app(),
+			storageHandler: new StorageHandler(firebase.app())
 		};
 
 		let vh = window.innerHeight * 0.01;
@@ -54,28 +58,24 @@ export default class App extends Component<{}, State> {
 		});
 	}
 
-	async onAddDeck({ name, description }: NewDeck) {
-		await createDeck({
-			name: name,
-			description: description ?? "",
-			id: Math.floor(Math.random() * 1000)
-		});
-		const decks = await getDecks();
-		this.setState({
-			decks: decks
-		});
+	async onAddDeck({name, description}: NewDeck) {
+		try {
+			await this.state.storageHandler?.createDeck({
+				name: name,
+				description: description ?? ""
+			});
+			const decks = await this.state.storageHandler?.getDecksOfCurrentUser();
+			this.setState({
+				decks: decks ?? []
+			});
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	componentDidMount() {
-		seedDatabase().then(async () => {
-			const decks = await getDecks();
-			this.setState({
-				decks: decks
-			});
-		});
-
 		this.state.firebase.auth().onAuthStateChanged(user => {
-			this.setState({ user: user });
+			this.setState({user: user});
 		});
 	}
 
@@ -92,6 +92,10 @@ export default class App extends Component<{}, State> {
 				firebase.auth.EmailAuthProvider.PROVIDER_ID
 			]
 		};
+
+		if (this.state.user === null) {
+			return <Redirect to={"/signin"} />;
+		}
 
 		return (
 			<Router basename={process.env.PUBLIC_URL}>
@@ -115,7 +119,6 @@ export default class App extends Component<{}, State> {
 							return <Redirect to={"/signin"} />;
 						}}
 					/>
-					{/* TODO: refactor these with withRouter HOCs */}
 					<Route
 						exact
 						path="/"
@@ -133,12 +136,13 @@ export default class App extends Component<{}, State> {
 						path="/decks/:id"
 						children={(
 							props: RouteComponentProps & {
-								match: { params: { id: string } };
+								match: { params: { uid: string } };
 							}
 						) => {
 							return (
 								<div className={styles.main}>
-									<Review deckId={parseInt(props.match.params.id)} />
+									<Review storageHandler={this.state.storageHandler}
+									        deckUid={props.match.params.uid} />
 									<Bottombar />
 								</div>
 							);
@@ -148,7 +152,7 @@ export default class App extends Component<{}, State> {
 						path="/add"
 						children={
 							<div className={styles.main}>
-								<Add decks={this.state.decks ?? []} />
+								<Add storageHandler={this.state.storageHandler} decks={this.state.decks ?? []} />
 								<Bottombar />
 							</div>
 						}

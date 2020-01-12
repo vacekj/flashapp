@@ -3,12 +3,13 @@ import React from "react";
 import styles from "./Review.module.css";
 
 import ReviewTopbar from "./ReviewTopbar";
-import { Deck, getDeck, getCardsOfDeck, Card } from "../../Lib/Storage";
+import StorageHandler, {Deck, Card} from "../../Lib/Storage";
 
 const DeckComponent = require("../Deck").default;
 
 interface Props {
-	deckId: number;
+	deckUid: string;
+	storageHandler: StorageHandler;
 }
 
 interface State {
@@ -24,33 +25,31 @@ export default class Review extends React.Component<Props, State> {
 		super(props);
 		this.state = {
 			deck: {
-				id: props.deckId,
+				uid: props.deckUid,
 				name: "Loading",
 				description: "Loading..."
-			},
+			} as Deck,
 			cards: [
 				{
 					front: "Loading...",
-					back: "Please wait",
-					id: -1,
-					deckId: -1
-				}
+					back: "Please wait"
+				} as Card
 			]
 		};
 	}
 
 	componentDidMount(): void {
-		getDeck(this.state.deck.id).then(deck => {
-			getCardsOfDeck(deck.id).then(cards => {
+		this.props.storageHandler.getDeckByUid(this.props.deckUid).then(deck => {
+			this.props.storageHandler.getCardsOfDeck(this.props.deckUid).then(cards => {
 				this.setState({
-					deck,
-					cards: cards.length ? cards : []
+					cards,
+					deck: deck.data() as Deck
 				});
 			});
 		});
 	}
 
-	onSwipe({ index, direction, cardId }: { index: number; direction: number, cardId: number }) {
+	onSwipe({index, direction, cardId}: { index: number; direction: number, cardId: number }) {
 		console.log(`Card swiped. Index: ${index} | Direction: ${direction} | cardId: ${cardId}`);
 	}
 
