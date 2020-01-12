@@ -121,7 +121,7 @@ export default class App extends Component<{}, State> {
 						}
 					/>
 					<Route
-						path="/decks/:id"
+						path="/decks/:uid"
 						children={(
 							props: RouteComponentProps & {
 								match: { params: { uid: string } };
