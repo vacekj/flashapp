@@ -87,7 +87,7 @@ const AddDeckDialog = (props: Props) => {
 					endIcon={<Save/>}
 					disabled={state.name.length < 1}
 				>
-					Save deck
+					Create deck
 				</Button>
 			</DialogActions>
 		</Dialog>
