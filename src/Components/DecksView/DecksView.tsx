@@ -5,7 +5,6 @@ import DeckCard from "./DeckCard";
 import { Link } from "react-router-dom";
 import { Deck } from "../../Lib/Storage";
 import Topbar from "../Topbar";
-import Card from "../Card";
 import PlusIcon from "../../assets/plus.svg";
 import AddDeckDialog from "../AddDeckDialog";
 import { NewDeck } from "../AddDeckDialog/AddDeckDialog";

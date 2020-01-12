@@ -1,5 +1,5 @@
 import React from "react";
-
+import { withRouter, RouteChildrenProps } from "react-router-dom";
 import styles from "./Bottombar.module.css";
 
 import homeIcon from "../../assets/home.svg";
@@ -32,7 +32,7 @@ const tabs: Tab[] = [
 	}
 ];
 
-export default function Bottombar(props: { match: string }) {
+function Bottombar(props: RouteChildrenProps) {
 	return (
 		<div className={styles.bottomBar}>
 			{tabs.map((tab, i) => {
@@ -41,7 +41,7 @@ export default function Bottombar(props: { match: string }) {
 						link={tab.link}
 						name={tab.name}
 						icon={tab.icon}
-						active={props.match === tab.link}
+						active={props.match?.path === tab.link}
 						key={i}
 					/>
 				);
@@ -49,3 +49,5 @@ export default function Bottombar(props: { match: string }) {
 		</div>
 	);
 }
+
+export default withRouter(Bottombar);

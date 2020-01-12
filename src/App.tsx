@@ -1,31 +1,54 @@
 import React, { Component } from "react";
 import Bottombar from "./Components/Bottombar";
 import Add from "./Components/AddView";
-import { BrowserRouter as Router, Route, RouteComponentProps, Switch } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Route,
+	RouteComponentProps,
+	Switch,
+	Redirect
+} from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
 import { createDeck, Deck, getDecks, seedDatabase } from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
 import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import * as firebase from "firebase";
+import Profile from "./Components/Profile";
 
 interface State {
 	decks: Deck[] | null;
+	firebase: firebase.app.App;
+	user?: firebase.User | null;
 }
 
 export default class App extends Component<{}, State> {
 	constructor(props: any) {
 		super(props);
-		this.state = { decks: null };
+		/* Initialize Firebase*/
+		const firebaseConfig = {
+			apiKey: "AIzaSyCdhcK-DNwIam9Tq-iUJoekbSgPfECbUX8",
+			authDomain: "flashapp-cz.firebaseapp.com",
+			databaseURL: "https://flashapp-cz.firebaseio.com",
+			projectId: "flashapp-cz",
+			storageBucket: "flashapp-cz.appspot.com",
+			messagingSenderId: "574846765511",
+			appId: "1:574846765511:web:e13cc04773a7dfd609b1e2",
+			measurementId: "G-1CCSX7MC9F"
+		};
 
-		// First we get the viewport height and we multiple it by 1% to get a value for a vh unit
+		const app = firebase.initializeApp(firebaseConfig);
+		app.analytics();
+
+		this.state = {
+			decks: null,
+			firebase: app
+		};
+
 		let vh = window.innerHeight * 0.01;
-
-		// Then we set the value in the --vh custom property to the root of the document
 		document.documentElement.style.setProperty("--vh", `${vh}px`);
-
-		// We listen to the resize event
 		window.addEventListener("resize", () => {
-			// We execute the same script as before
 			let vh = window.innerHeight * 0.01;
 			document.documentElement.style.setProperty("--vh", `${vh}px`);
 		});
@@ -50,25 +73,61 @@ export default class App extends Component<{}, State> {
 				decks: decks
 			});
 		});
-		// this.setState({ decks: [] });
+
+		this.state.firebase.auth().onAuthStateChanged(user => {
+			this.setState({ user: user });
+		});
 	}
 
 	render() {
+		const uiConfig = {
+			// Popup signin flow rather than redirect flow.
+			signInFlow: "popup",
+			// Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+			signInSuccessUrl: "/profile",
+			// We will display Google and Facebook as auth providers.
+			signInOptions: [
+				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+				firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+				firebase.auth.EmailAuthProvider.PROVIDER_ID
+			]
+		};
+
 		return (
 			<Router basename={process.env.PUBLIC_URL}>
 				{/* basename is here so that gh-pages routing works correctly */}
 				<Switch>
 					<Route
+						path="/signin"
+						component={() => (
+							<div>
+								<StyledFirebaseAuth
+									uiConfig={uiConfig}
+									firebaseAuth={this.state.firebase.auth()}
+								/>
+							</div>
+						)}
+					/>
+					<Route
+						path={"/signout"}
+						component={() => {
+							this.state.firebase.auth().signOut();
+							return <Redirect to={"/signin"} />;
+						}}
+					/>
+					{/* TODO: refactor these with withRouter HOCs */}
+					<Route
 						exact
 						path="/"
-						children={(props: RouteComponentProps) => {
-							return (
-								<div className={styles.main}>
-									<DecksView decks={this.state.decks} addDeckHandler={this.onAddDeck.bind(this)}/>
-									<Bottombar match={props.match.path}/>
-								</div>
-							);
-						}}
+						children={
+							<div className={styles.main}>
+								<DecksView
+									decks={this.state.decks}
+									addDeckHandler={this.onAddDeck.bind(this)}
+								/>
+								<Bottombar />
+							</div>
+						}
 					/>
 					<Route
 						path="/decks/:id"
@@ -79,33 +138,33 @@ export default class App extends Component<{}, State> {
 						) => {
 							return (
 								<div className={styles.main}>
-									<Review deckId={parseInt(props.match.params.id)}/>
-									<Bottombar match={props.match.path}/>
+									<Review deckId={parseInt(props.match.params.id)} />
+									<Bottombar />
 								</div>
 							);
 						}}
 					/>
 					<Route
 						path="/add"
-						children={(props: RouteComponentProps) => {
-							return (
-								<div className={styles.main}>
-									<Add decks={this.state.decks ?? []}/>
-									<Bottombar match={props.match.path}/>
-								</div>
-							);
-						}}
+						children={
+							<div className={styles.main}>
+								<Add decks={this.state.decks ?? []} />
+								<Bottombar />
+							</div>
+						}
 					/>
 					<Route
 						path="/profile"
-						children={(props: RouteComponentProps) => {
-							return (
-								<div className={styles.main}>
-									<Add decks={this.state.decks ?? []}/>
-									<Bottombar match={props.match.path}/>
-								</div>
-							);
-						}}
+						children={
+							<div className={styles.main}>
+								<Profile
+									firebase={this.state.firebase}
+									user={this.state.user}
+									decks={this.state.decks}
+								/>
+								<Bottombar />
+							</div>
+						}
 					/>
 				</Switch>
 			</Router>

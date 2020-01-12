@@ -56,12 +56,17 @@ export interface Card {
 	deckId: number;
 	front: string;
 	back: string;
+	createdAt?: Date;
+	updatedAt?: Date;
 }
 
 export interface Deck {
 	id: number;
 	name: string;
 	description: string;
+	createdAt?: Date;
+	updatedAt?: Date;
+	lastAdditionAt?: Date;
 }
 
 export async function seedDatabase() {
