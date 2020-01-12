@@ -1,5 +1,3 @@
-import * as lf from "localforage";
-import faker from "faker";
 import firebase, {firestore} from "firebase";
 
 export default class StorageHandler {
@@ -58,13 +56,19 @@ export default class StorageHandler {
 	}
 
 	async getDecksOfCurrentUser() {
+		if (!this.firebase.auth().currentUser) {
+			return [];
+		}
 		const res = await this.db
 			.collection(StorageHandler.DECKS_COLLECTION)
 			.where("ownerUid", "==", this.firebase.auth().currentUser?.uid)
 			.get();
 		return res.docs
 			.map(snapshot => {
-				return snapshot.data(); /*TODO: does this return uid as well?*/
+				return {
+					...snapshot.data(),
+					uid: snapshot.id
+				} as Deck;
 			})
 			.filter(data => data.deleted !== true) as Deck[];
 	}
@@ -76,7 +80,10 @@ export default class StorageHandler {
 			.get();
 		return res.docs
 			.map(snapshot => {
-				return snapshot.data(); /*TODO: does this return uid as well?*/
+				return {
+					...snapshot.data(),
+					uid: snapshot.id
+				} as Card;
 			})
 			.filter(card => card.deleted !== true) as Card[];
 	}
@@ -143,6 +150,7 @@ export interface Card extends CardToAdd {
 	uid: string;
 	createdAt?: firebase.firestore.Timestamp;
 	updatedAt?: firebase.firestore.Timestamp;
+	deleted?: boolean;
 }
 
 export interface DeckToSave {

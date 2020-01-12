@@ -19,7 +19,6 @@ import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
 import {Button, Dialog, IconButton, makeStyles, Snackbar} from "@material-ui/core";
-import firebase from "firebase";
 
 const DeckComponent = require("../Deck").default;
 
@@ -90,6 +89,7 @@ export default function Add(props: Props) {
 					}}
 				/>
 			</Dialog>
+
 			<Snackbar
 				anchorOrigin={{
 					vertical: "bottom",
@@ -121,6 +121,7 @@ export default function Add(props: Props) {
 					</Button>
 				}
 			/>
+
 			<div className={styles.addContainer}>
 				<Topbar
 					style={{
@@ -143,7 +144,7 @@ export default function Add(props: Props) {
 									state.back.length < 1
 								}
 								onClick={async () => {
-									if (state.selectedDeckUid === null) {
+									if (!state.selectedDeckUid) {
 										return false;
 									}
 									const card: CardToAdd = {
@@ -152,14 +153,18 @@ export default function Add(props: Props) {
 										deckUid: state.selectedDeckUid
 									};
 									const addedCardRef = await props.storageHandler.createCard(card);
-									setPreviousCard((await addedCardRef.get()).data() as Card);
+									const addedCard = await addedCardRef.get();
+									setPreviousCard({
+										...addedCard.data(),
+										uid: addedCard.id
+									} as Card);
 									setState({
 										...state,
 										front: "",
 										back: ""
 									});
 									setSnackbarShown(true);
-									setTimeout(() => setSnackbarShown(false), 1000);
+									setTimeout(() => setSnackbarShown(false), 3 * 1000);
 								}}
 								classes={{
 									root: classes.root,

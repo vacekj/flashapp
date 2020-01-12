@@ -74,8 +74,18 @@ export default class App extends Component<{}, State> {
 	}
 
 	componentDidMount() {
-		this.state.firebase.auth().onAuthStateChanged(user => {
-			this.setState({user: user});
+		this.state.firebase.auth().onAuthStateChanged(async user => {
+			if (!user) {
+				this.setState({
+					user
+				});
+				return;
+			}
+			const decks = await this.state.storageHandler?.getDecksOfCurrentUser();
+			this.setState({
+				decks: decks ?? [],
+				user
+			});
 		});
 	}
 
@@ -93,32 +103,10 @@ export default class App extends Component<{}, State> {
 			]
 		};
 
-		if (this.state.user === null) {
-			return <Redirect to={"/signin"} />;
-		}
-
 		return (
 			<Router basename={process.env.PUBLIC_URL}>
-				{/* basename is here so that gh-pages routing works correctly */}
+				{this.state.user === null && <Redirect to={"/signin"} />}
 				<Switch>
-					<Route
-						path="/signin"
-						component={() => (
-							<div>
-								<StyledFirebaseAuth
-									uiConfig={uiConfig}
-									firebaseAuth={this.state.firebase.auth()}
-								/>
-							</div>
-						)}
-					/>
-					<Route
-						path={"/signout"}
-						component={() => {
-							this.state.firebase.auth().signOut();
-							return <Redirect to={"/signin"} />;
-						}}
-					/>
 					<Route
 						exact
 						path="/"
@@ -169,6 +157,24 @@ export default class App extends Component<{}, State> {
 								<Bottombar />
 							</div>
 						}
+					/>
+					<Route
+						path="/signin"
+						component={() => (
+							<div>
+								<StyledFirebaseAuth
+									uiConfig={uiConfig}
+									firebaseAuth={this.state.firebase.auth()}
+								/>
+							</div>
+						)}
+					/>
+					<Route
+						path={"/signout"}
+						component={() => {
+							this.state.firebase.auth().signOut();
+							return <Redirect to={"/signin"} />;
+						}}
 					/>
 				</Switch>
 			</Router>
