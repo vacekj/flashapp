@@ -8,6 +8,7 @@ import TextareaAutosize from "react-textarea-autosize";
 interface Props {
 	placeholder?: string;
 	onChange: (text: string) => void;
+	value: string;
 }
 
 class AddCard extends React.Component<Props, any> {
@@ -27,6 +28,7 @@ class AddCard extends React.Component<Props, any> {
 						this.props.onChange(e.target.value);
 					}}
 					inputRef={(tag: any) => (this.textarea = tag)}
+					value={this.props.value}
 				/>
 			</div>
 		);

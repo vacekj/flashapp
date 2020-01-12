@@ -30,6 +30,13 @@ export async function updateCard(card: Card) {
 	return lf.setItem("cards", [...splicedCards, card]);
 }
 
+export async function removeCard(cardId: number) {
+	const cards = await getCards();
+	const cardToUpdate = cards.find((d) => d.id === cardId);
+	const splicedCards = cards.splice(cards.indexOf(cardToUpdate as Card), 1);
+	return lf.setItem("cards", [...splicedCards]);
+}
+
 export async function getCardsOfDeck(deckId: number) {
 	const cards: Card[] = await lf.getItem("cards");
 	return cards ? cards.filter((card) => card.deckId === deckId) : [];

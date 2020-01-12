@@ -10,14 +10,15 @@ import Hidden from "@material-ui/core/Hidden";
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import { createCard, Deck } from "../../Lib/Storage";
+import { Card, createCard, Deck, removeCard } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
 import NoteAddRoundedIcon from "@material-ui/icons/NoteAddRounded";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import { Dialog, IconButton, makeStyles } from "@material-ui/core";
+import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
+import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
 
 const DeckComponent = require("../Deck").default;
 
@@ -43,12 +44,19 @@ interface State {
 }
 
 export default function Add(props: Props) {
+	const [previousCard, setPreviousCard] = useState<{ front: string, back: string, id: number }>({
+		front: "",
+		back: "",
+		id: -1
+	});
 	const [state, setState] = useState<State>({
 		selectedDeckId: null,
 		front: "",
 		back: "",
 		previewing: false
 	});
+
+	const [snackbarShown, setSnackbarShown] = useState(false);
 
 	const classes = useStyles();
 
@@ -59,9 +67,12 @@ export default function Add(props: Props) {
 				onClose={() => setState({ ...state, previewing: false })}
 				fullScreen
 			>
-				<IconButton classes={{
-					root: classes.closeButton
-				}} onClick={() => setState({ ...state, previewing: false })}>
+				<IconButton
+					classes={{
+						root: classes.closeButton
+					}}
+					onClick={() => setState({ ...state, previewing: false })}
+				>
 					<CloseRoundedIcon fontSize={"large"}/>
 				</IconButton>
 				<DeckComponent
@@ -77,6 +88,37 @@ export default function Add(props: Props) {
 					}}
 				/>
 			</Dialog>
+			<Snackbar
+				anchorOrigin={{
+					vertical: "bottom",
+					horizontal: "center"
+				}}
+				open={snackbarShown}
+				autoHideDuration={1000}
+				message="Card added"
+				action={
+					<Button
+						size="small"
+						aria-label="close"
+						color="inherit"
+						onClick={async () => {
+							setSnackbarShown(false);
+							setState({
+								...state,
+								front: previousCard.front,
+								back: previousCard.back
+							});
+							await removeCard(previousCard.id);
+						}}
+						style={{
+							color: "orange"
+						}}
+						endIcon={<UndoRoundedIcon/>}
+					>
+						Undo
+					</Button>
+				}
+			/>
 			<div className={styles.addContainer}>
 				<Topbar
 					style={{
@@ -99,12 +141,21 @@ export default function Add(props: Props) {
 									state.back.length < 1
 								}
 								onClick={async () => {
-									await createCard({
+									const card: Card = {
 										front: state.front,
 										back: state.back,
 										deckId: state.selectedDeckId as number,
 										id: Math.floor(Math.random() * 10000)
+									};
+									setPreviousCard(card);
+									await createCard(card);
+									setState({
+										...state,
+										front: "",
+										back: ""
 									});
+									setSnackbarShown(true);
+									setTimeout(() => setSnackbarShown(false), 1000);
 								}}
 								classes={{
 									root: classes.root,
@@ -139,7 +190,7 @@ export default function Add(props: Props) {
 								<MenuItem value="" disabled>
 									Select a deck
 								</MenuItem>
-								{props.decks.map((deck) => {
+								{props.decks.map(deck => {
 									return (
 										<MenuItem value={deck.id.toString()} key={deck.id}>
 											{deck.name}
@@ -159,6 +210,7 @@ export default function Add(props: Props) {
 									front: text
 								});
 							}}
+							value={state.front}
 						/>
 
 						<Hidden smUp={true}>
@@ -178,10 +230,10 @@ export default function Add(props: Props) {
 									back: text
 								});
 							}}
+							value={state.back}
 						/>
 					</div>
 				</div>
-				;
 			</div>
 		</>
 	);
