@@ -2,7 +2,7 @@
 	"name": "flashapp",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "https://jouzalol.github.io/flashapp",
+	"homepage": "https://flashapp-cz.web.app/",
 	"dependencies": {
 		"@babel/core": "^7.7.2",
 		"@material-ui/core": "^4.8.3",
@@ -28,7 +28,7 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"deploy": "yarn build && gh-pages -d build"
+		"deploy": "yarn build && firebase deploy"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
