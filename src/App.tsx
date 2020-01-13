@@ -90,12 +90,12 @@ export default class App extends Component<{}, State> {
 	}
 
 	render() {
+		if (this.state.user === undefined) {
+			return null;/* TODO: show a loading screen here with some educational text */
+		}
 		const uiConfig = {
-			// Popup signin flow rather than redirect flow.
 			signInFlow: "popup",
-			// Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-			signInSuccessUrl: "/profile",
-			// We will display Google and Facebook as auth providers.
+			signInSuccessUrl: "/",
 			signInOptions: [
 				firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 				firebase.auth.FacebookAuthProvider.PROVIDER_ID,

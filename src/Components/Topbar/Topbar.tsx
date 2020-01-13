@@ -1,7 +1,7 @@
 import * as React from "react";
 import styles from "./Topbar.module.css";
 
-import { ComponentProps } from "react";
+import {ComponentProps} from "react";
 
 function Topbar(props: ComponentProps<"div">) {
 	return (
