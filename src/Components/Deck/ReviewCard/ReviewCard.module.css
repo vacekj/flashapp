@@ -7,14 +7,17 @@
     flex-direction: column;
 }
 
+.front, .back {
+    padding: 3rem;
+    font-size: 1.5rem;
+}
+
 .front {
     display: block;
-    padding: 3rem;
 }
 
 .back {
     display: none;
-    padding: 3rem;
 }
 
 .flippedBack {

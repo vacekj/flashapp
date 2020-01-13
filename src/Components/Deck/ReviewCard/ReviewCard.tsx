@@ -21,7 +21,7 @@ class ReviewCard extends React.Component<Props, State> {
     onClick(evt: React.MouseEvent) {
         evt.preventDefault();
         this.setState({
-            flipped: true
+            flipped: !this.state.flipped
         });
     }
 

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Bottombar from "./Components/Bottombar";
 import Add from "./Components/AddView";
 import {
@@ -10,18 +10,21 @@ import {
 } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
-import StorageHandler, {Deck} from "./Lib/Storage";
+import StorageHandler, { Deck } from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
-import {NewDeck} from "./Components/AddDeckDialog/AddDeckDialog";
+import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import * as firebase from "firebase";
 import Profile from "./Components/Profile";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 interface State {
 	decks: Deck[] | null;
 	firebase: firebase.app.App;
 	user?: firebase.User | null;
 	storageHandler: StorageHandler;
+	unsupportedBrowser?: boolean;
 }
 
 export default class App extends Component<{}, State> {
@@ -58,7 +61,7 @@ export default class App extends Component<{}, State> {
 		});
 	}
 
-	async onAddDeck({name, description}: NewDeck) {
+	async onAddDeck({ name, description }: NewDeck) {
 		try {
 			await this.state.storageHandler?.createDeck({
 				name: name,
@@ -82,16 +85,25 @@ export default class App extends Component<{}, State> {
 				return;
 			}
 			const decks = await this.state.storageHandler?.getDecksOfCurrentUser();
+			let unsupportedBrowser = false;
+			try {
+				await firebase.firestore().enablePersistence();
+			} catch (e) {
+				if (e.code === "unimplemented") {
+					unsupportedBrowser = true;
+				}
+			}
 			this.setState({
 				decks: decks ?? [],
-				user
+				user,
+				unsupportedBrowser
 			});
 		});
 	}
 
 	render() {
 		if (this.state.user === undefined) {
-			return null;/* TODO: show a loading screen here with some educational text */
+			return null; /* TODO: show a loading screen here with some educational text */
 		}
 		const uiConfig = {
 			signInFlow: "popup",
@@ -103,8 +115,22 @@ export default class App extends Component<{}, State> {
 			]
 		};
 
+		const unsupBrowserAlert = () => (
+			<Snackbar
+				open={true}
+				autoHideDuration={4000}
+				onClose={() => this.setState({ unsupportedBrowser: false })}
+			>
+				<Alert severity="warning">
+					Your browser does not support offline mode. Please use a modern browser to take
+					advantage of all features.
+				</Alert>
+			</Snackbar>
+		);
+
 		return (
 			<Router basename={process.env.PUBLIC_URL}>
+				{this.state.unsupportedBrowser && unsupBrowserAlert()}
 				{this.state.user === null && <Redirect to={"/signin"} />}
 				<Switch>
 					<Route
@@ -129,8 +155,10 @@ export default class App extends Component<{}, State> {
 						) => {
 							return (
 								<div className={styles.main}>
-									<Review storageHandler={this.state.storageHandler}
-									        deckUid={props.match.params.uid} />
+									<Review
+										storageHandler={this.state.storageHandler}
+										deckUid={props.match.params.uid}
+									/>
 									<Bottombar />
 								</div>
 							);
@@ -140,7 +168,10 @@ export default class App extends Component<{}, State> {
 						path="/add"
 						children={
 							<div className={styles.main}>
-								<Add storageHandler={this.state.storageHandler} decks={this.state.decks ?? []} />
+								<Add
+									storageHandler={this.state.storageHandler}
+									decks={this.state.decks ?? []}
+								/>
 								<Bottombar />
 							</div>
 						}
