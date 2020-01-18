@@ -94,6 +94,9 @@ export default class StorageHandler {
 			createdAt: StorageHandler.getTimeStamp(new Date()),
 			updatedAt: StorageHandler.getTimeStamp(new Date())
 		};
+		await this.db.collection(StorageHandler.DECKS_COLLECTION).doc(card.deckUid).update(<Partial<Deck>>{
+			lastAdditionAt: StorageHandler.getTimeStamp(new Date())
+		});
 		return (await this.db
 			.collection(StorageHandler.CARDS_COLLECTION)
 			.add(doc)) as firestore.DocumentReference<Card>;
