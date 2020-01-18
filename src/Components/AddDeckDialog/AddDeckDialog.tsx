@@ -2,6 +2,7 @@ import * as React from "react";
 import {useState} from "react";
 import {
 	Button,
+	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
@@ -17,13 +18,16 @@ export interface NewDeck {
 
 interface Props {
 	open: boolean;
-	onSave: (deck: NewDeck) => void;
+	onSave: (deck: NewDeck) => Promise<void>;
 	onClose: () => void;
 }
 
 const useStyles = makeStyles({
 	label: {
 		color: "#bdbdbd"
+	},
+	colorPrimary: {
+		color: "white"
 	}
 });
 
@@ -31,6 +35,8 @@ const AddDeckDialog = (props: Props) => {
 	const [state, setState] = useState<NewDeck>({
 		name: ""
 	});
+
+	const [loading, setLoading] = useState(false);
 
 	const styles = useStyles();
 
@@ -77,15 +83,19 @@ const AddDeckDialog = (props: Props) => {
 					Cancel
 				</Button>
 				<Button
-					onClick={() => {
+					onClick={async () => {
+						setLoading(true);
+						await props.onSave(state);
 						props.onClose();
-						props.onSave(state);
+						setLoading(false);
 					}}
 					color="primary"
 					variant={"contained"}
 					disabled={state.name.length < 1}
 				>
-					Create deck
+					{loading ? <CircularProgress classes={{
+						colorPrimary: styles.colorPrimary
+					}} size={"24px"} /> : "Create deck"}
 				</Button>
 			</DialogActions>
 		</Dialog>

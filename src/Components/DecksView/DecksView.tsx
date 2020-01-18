@@ -31,7 +31,7 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 
 interface Props {
 	decks: Deck[] | null;
-	addDeckHandler: (newDeck: NewDeck) => void;
+	addDeckHandler: (newDeck: NewDeck) => Promise<void>;
 }
 
 interface State {
