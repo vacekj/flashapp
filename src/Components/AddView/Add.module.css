@@ -1,6 +1,7 @@
 .addView {
     font-size: 18px;
     overflow: scroll;
+    background: #F0F3FA;
 }
 
 .addContainer {

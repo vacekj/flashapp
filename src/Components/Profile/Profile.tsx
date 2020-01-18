@@ -26,7 +26,7 @@ function Profile(props: Props & RouteComponentProps) {
 				</div>
 			</Topbar>
 			<div className={styles.userInfo}>
-				<img src={props.user?.photoURL ?? defaultUserPicture} alt="Profile picture" />
+				<img src={props.user?.photoURL ?? defaultUserPicture} />
 				<div className={styles.userName}>{props.user?.displayName ?? props.user?.email}</div>
 			</div>
 			<div className={styles.userStats}>

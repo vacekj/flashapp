@@ -8,3 +8,8 @@
     box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.1);
     background: white;
 }
+
+.bottomBar a {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+}

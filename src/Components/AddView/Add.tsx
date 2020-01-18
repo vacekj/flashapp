@@ -164,7 +164,7 @@ export default function Add(props: Props) {
 										back: ""
 									});
 									setSnackbarShown(true);
-									setTimeout(() => setSnackbarShown(false), 3 * 1000);
+									setTimeout(() => setSnackbarShown(false), 3_000);
 								}}
 								classes={{
 									root: classes.root,
