@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import {useState} from "react";
 import {
 	Button,
 	Dialog,
@@ -9,7 +9,6 @@ import {
 	makeStyles,
 	TextField
 } from "@material-ui/core";
-import Save from "@material-ui/icons/Save";
 
 export interface NewDeck {
 	name: string;
@@ -84,7 +83,6 @@ const AddDeckDialog = (props: Props) => {
 					}}
 					color="primary"
 					variant={"contained"}
-					endIcon={<Save/>}
 					disabled={state.name.length < 1}
 				>
 					Create deck
