@@ -1,45 +1,29 @@
 import * as React from "react";
 import styles from "./ReviewCard.module.css";
+import {useState} from "react";
 
-interface State {
-    flipped: boolean;
-}
 
 interface Props {
-    front: string;
-    back: string;
+	front: string;
+	back: string;
 }
 
-class ReviewCard extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = {
-            flipped: false
-        };
-    }
+function ReviewCard(props: Props) {
+	const [flipped, setFlipped] = useState(false);
 
-    onClick(evt: React.MouseEvent) {
-        evt.preventDefault();
-        this.setState({
-            flipped: !this.state.flipped
-        });
-    }
-
-    public render() {
-        return (
-            <div onClick={this.onClick.bind(this)} className={styles.reviewCard}>
-                <div className={styles.front}>{this.props.front}</div>
-                <div
-                    className={[
-                        styles.back,
-                        this.state.flipped ? styles.flippedBack : ""
-                    ].join(" ")}
-                >
-                    {this.props.back}
-                </div>
-            </div>
-        );
-    }
+	return (
+		<div onClick={() => setFlipped(!flipped)} className={styles.reviewCard}>
+			<div className={styles.front}>{props.front}</div>
+			<div
+				className={[
+					styles.back,
+					flipped ? styles.flippedBack : ""
+				].join(" ")}
+			>
+				{props.back}
+			</div>
+		</div>
+	);
 }
 
 export default ReviewCard;

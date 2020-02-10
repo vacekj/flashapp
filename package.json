@@ -59,6 +59,7 @@
 		"typescript",
 		"cssmodules",
 		"createindex",
+		"functional",
 		"notest",
 		"uppercase"
 	]

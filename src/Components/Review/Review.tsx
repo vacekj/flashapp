@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./Review.module.css";
 
 import ReviewTopbar from "./ReviewTopbar";
-import StorageHandler, {Deck, Card} from "../../Lib/Storage";
+import StorageHandler, { Deck, Card } from "../../Lib/Storage";
 
 const DeckComponent = require("../Deck").default;
 
@@ -15,9 +15,6 @@ interface Props {
 interface State {
 	deck: Deck;
 	cards: Card[];
-}
-
-interface onSwipeArgs {
 }
 
 export default class Review extends React.Component<Props, State> {
@@ -49,7 +46,7 @@ export default class Review extends React.Component<Props, State> {
 		});
 	}
 
-	onSwipe({index, direction, cardId}: { index: number; direction: number, cardId: number }) {
+	onSwipe({ index, direction, cardId }: { index: number; direction: number, cardId: number }) {
 		console.log(`Card swiped. Index: ${index} | Direction: ${direction} | cardId: ${cardId}`);
 	}
 
@@ -65,15 +62,15 @@ export default class Review extends React.Component<Props, State> {
 					deckName={this.state.deck.name}
 				/>
 
-				<div className={styles.reviewContainer}>
+				<div className={styles.reviewContainer} >
 					<>
 						<DeckComponent
 							onSwipe={this.onSwipe.bind(this)}
 							cards={this.state.cards}
 						/>
 					</>
-				</div>
-			</div>
+				</div >
+			</div >
 		);
 	}
 }
