@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -10,7 +10,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import StorageHandler, {Card, CardToAdd, Deck} from "../../Lib/Storage";
+import StorageHandler, { Card, CardToAdd, Deck } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
@@ -18,13 +18,13 @@ import NoteAddRoundedIcon from "@material-ui/icons/NoteAddRounded";
 import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
-import {Button, Dialog, IconButton, makeStyles, Snackbar} from "@material-ui/core";
+import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
 
 const DeckComponent = require("../Deck").default;
 
 const useStyles = makeStyles({
-	root: {color: "black"},
-	colorDisabled: {color: "grey", background: "red"},
+	root: { color: "black" },
+	colorDisabled: { color: "grey", background: "red" },
 	closeButton: {
 		position: "absolute",
 		right: 0,
@@ -45,13 +45,17 @@ interface State {
 }
 
 export default function Add(props: Props) {
-	const [previousCard, setPreviousCard] = useState<{ front: string, back: string, uid: string }>({
+	const [previousCard, setPreviousCard] = useState<{ front: string; back: string; uid: string }>({
 		front: "",
 		back: "",
 		uid: ""
 	});
+	const lastAddedToDeck = props.decks.sort((a, b) => {
+		return (b.lastAdditionAt?.seconds || 0) - (a.lastAdditionAt?.seconds || 0);
+	})[0];
+
 	const [state, setState] = useState<State>({
-		selectedDeckUid: null,
+		selectedDeckUid: lastAddedToDeck.uid,
 		front: "",
 		back: "",
 		previewing: false
@@ -65,14 +69,14 @@ export default function Add(props: Props) {
 		<>
 			<Dialog
 				open={state.previewing}
-				onClose={() => setState({...state, previewing: false})}
+				onClose={() => setState({ ...state, previewing: false })}
 				fullScreen
 			>
 				<IconButton
 					classes={{
 						root: classes.closeButton
 					}}
-					onClick={() => setState({...state, previewing: false})}
+					onClick={() => setState({ ...state, previewing: false })}
 				>
 					<CloseRoundedIcon fontSize={"large"} />
 				</IconButton>
@@ -85,8 +89,7 @@ export default function Add(props: Props) {
 							deckId: -1
 						}
 					]}
-					onSwipe={() => {
-					}}
+					onSwipe={() => {}}
 				/>
 			</Dialog>
 
@@ -133,7 +136,7 @@ export default function Add(props: Props) {
 						<div className={styles.iconsContainer}>
 							<IconButton
 								disabled={state.front.length + state.back.length < 1}
-								onClick={() => setState({...state, previewing: true})}
+								onClick={() => setState({ ...state, previewing: true })}
 							>
 								<PlayArrowRoundedIcon fontSize={"large"} />
 							</IconButton>
@@ -152,7 +155,9 @@ export default function Add(props: Props) {
 										back: state.back,
 										deckUid: state.selectedDeckUid
 									};
-									const addedCardRef = await props.storageHandler.createCard(card);
+									const addedCardRef = await props.storageHandler.createCard(
+										card
+									);
 									const addedCard = await addedCardRef.get();
 									setPreviousCard({
 										...addedCard.data(),
@@ -188,7 +193,7 @@ export default function Add(props: Props) {
 								className={styles.deckSelectText}
 								displayEmpty={true}
 								autoWidth={true}
-								defaultValue={""}
+								value={state.selectedDeckUid}
 								onChange={e => {
 									setState({
 										...state,
@@ -199,13 +204,24 @@ export default function Add(props: Props) {
 								<MenuItem value="" disabled>
 									Select a deck
 								</MenuItem>
-								{props.decks.map(deck => {
-									return (
-										<MenuItem value={deck.uid} key={deck.uid}>
-											{deck.name}
-										</MenuItem>
-									);
-								})}
+								{props.decks
+									.sort((a, b) => {
+										return (
+											(b.lastAdditionAt?.seconds || 0) -
+											(a.lastAdditionAt?.seconds || 0)
+										);
+									})
+									.map((deck, i) => {
+										return (
+											<MenuItem
+												value={deck.uid}
+												key={deck.uid}
+												selected={i === 0}
+											>
+												{deck.name}
+											</MenuItem>
+										);
+									})}
 							</Select>
 						</FormControl>
 					</div>
