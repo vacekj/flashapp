@@ -169,3 +169,10 @@ export interface Deck extends DeckToSave {
 	lastAdditionAt?: firebase.firestore.Timestamp;
 	deleted?: boolean;
 }
+
+export interface Revision {
+	uid: string;
+	cardUid: string;
+	result: boolean;
+	time: number;
+}
