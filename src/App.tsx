@@ -76,6 +76,20 @@ export default class App extends Component<{}, State> {
 		}
 	}
 
+
+	async onDeleteDeck(deckUid: string) {
+		try {
+			console.log("");
+			await this.state.storageHandler?.deleteDeck(deckUid);
+			const decks = await this.state.storageHandler?.getDecksOfCurrentUser();
+			return this.setState({
+				decks: decks ?? []
+			});
+		} catch (e) {
+			console.error(e);
+		}
+	}
+
 	componentDidMount() {
 		this.state.firebase.auth().onAuthStateChanged(async user => {
 			if (!user) {
@@ -141,6 +155,7 @@ export default class App extends Component<{}, State> {
 								<DecksView
 									decks={this.state.decks}
 									addDeckHandler={this.onAddDeck.bind(this)}
+									deleteDeckhandler={this.onDeleteDeck.bind(this)}
 								/>
 								<Bottombar />
 							</div>

@@ -32,6 +32,7 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 interface Props {
 	decks: Deck[] | null;
 	addDeckHandler: (newDeck: NewDeck) => Promise<void>;
+	deleteDeckhandler: (deckUid: string) => Promise<void>;
 }
 
 interface State {
@@ -62,9 +63,9 @@ export default class DecksView extends React.Component<Props, State> {
 		return decks.length > 0 ? (
 			decks.map((deck, i) => {
 				return (
-					<Link className={styles.link} to={"/decks/" + deck.uid} key={i}>
-						<DeckCard deck={deck} key={deck.uid} />
-					</Link>
+					<div className="w-full" key={i}>
+						<DeckCard deck={deck} onDeckDelete={this.props.deleteDeckhandler}/>
+					</div>
 				);
 			})
 		) : (

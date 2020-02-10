@@ -1,23 +1,32 @@
 import React from "react";
-import styles from "./DeckDetail.module.css";
 import StorageHandler, {Deck} from "../../../Lib/Storage";
 import Button from "@material-ui/core/Button";
+import {Dialog} from "@material-ui/core";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
 
 interface Props {
 	deck: Deck;
-	storageHandler: StorageHandler;
+	open: boolean;
+	onClose: () => void;
+	onDeckDelete: (deckUid: string) => Promise<void>;
 }
 
 const DeckDetail = (props: Props) => {
 	return (
-		<>
-			<div className={styles.container}>
-				<h3 className={styles.deckName}>{props.deck.name}</h3>
-			</div>
-			<Button variant={"outlined"} onClick={async () => {
-				await props.storageHandler.deleteDeck(props.deck.uid);
-			}}>Delete</Button>
-		</>
+		<Dialog
+			open={props.open}
+			onClose={props.onClose}
+		>
+			<DialogTitle>
+				<h3>{props.deck.name}</h3>
+			</DialogTitle>
+			<DialogContent>
+				<Button variant={"outlined"} onClick={() => props.onDeckDelete(props.deck.uid)}>
+					Delete
+				</Button>
+			</DialogContent>
+		</Dialog>
 	);
 };
 

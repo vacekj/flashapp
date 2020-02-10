@@ -25,7 +25,10 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"deploy": "yarn build && firebase deploy"
+		"deploy": "yarn build && firebase deploy",
+		"build:styles": "postcss src/tailwind.css -o src/styles.css",
+		"prebuild": "yarn build:styles",
+		"prestart": "yarn build:styles"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
@@ -44,16 +47,20 @@
 	},
 	"devDependencies": {
 		"@babel/core": "^7.7.2",
-		"babel-plugin-react-css-modules": "^5.2.6",
+		"@fullhuman/postcss-purgecss": "^2.0.6",
 		"@types/faker": "^4.1.7",
 		"@types/jest": "24.0.21",
 		"@types/node": "12.12.5",
 		"@types/react": "^16.9.11",
 		"@types/react-dom": "16.9.3",
 		"@types/react-router-dom": "^5.1.2",
+		"autoprefixer": "^9.7.4",
+		"babel-plugin-react-css-modules": "^5.2.6",
 		"create-react-component-folder": "^0.1.30",
 		"gh-pages": "^2.1.1",
-		"prettier": "^1.19.1"
+		"postcss-cli": "^7.1.0",
+		"prettier": "^1.19.1",
+		"tailwindcss": "^1.2.0"
 	},
 	"crcf": [
 		"typescript",
