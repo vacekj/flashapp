@@ -3,6 +3,16 @@
 	"version": "0.1.0",
 	"private": true,
 	"homepage": "https://flashapp-cz.web.app/",
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject",
+		"deploy": "yarn build && firebase deploy",
+		"build:styles": "postcss src/tailwind.css -o src/styles.css",
+		"prebuild": "yarn build:styles",
+		"prestart": "yarn build:styles"
+	},
 	"dependencies": {
 		"@material-ui/core": "^4.8.3",
 		"@material-ui/icons": "^4.5.1",
@@ -19,16 +29,6 @@
 		"react-textfit": "^1.1.0",
 		"react-use-gesture": "5.0.0",
 		"typescript": "^3.7.4"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject",
-		"deploy": "yarn build && firebase deploy",
-		"build:styles": "postcss src/tailwind.css -o src/styles.css",
-		"prebuild": "yarn build:styles",
-		"prestart": "yarn build:styles"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
@@ -58,9 +58,16 @@
 		"babel-plugin-react-css-modules": "^5.2.6",
 		"create-react-component-folder": "^0.1.30",
 		"gh-pages": "^2.1.1",
+		"husky": "^4.2.1",
 		"postcss-cli": "^7.1.0",
 		"prettier": "^1.19.1",
+		"pretty-quick": "^2.0.1",
 		"tailwindcss": "^1.2.0"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "pretty-quick --staged"
+		}
 	},
 	"crcf": [
 		"typescript",
