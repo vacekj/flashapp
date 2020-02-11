@@ -1,12 +1,11 @@
 import * as React from "react";
 import styles from "./Topbar.module.css";
 
-import {ComponentProps} from "react";
+import { ComponentProps } from "react";
 
 function Topbar(props: ComponentProps<"div">) {
 	return (
-		<div className={styles.topbar} {...props}>
-			{/*<img src={logo} alt="FlashApp Logo"/>*/}
+		<div {...props} className={styles.topbar.concat(" " + props.className)}>
 			{props.children}
 		</div>
 	);

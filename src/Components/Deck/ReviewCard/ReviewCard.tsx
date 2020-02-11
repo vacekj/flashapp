@@ -1,6 +1,6 @@
 import * as React from "react";
 import styles from "./ReviewCard.module.css";
-import {useState} from "react";
+import { useState } from "react";
 
 
 interface Props {

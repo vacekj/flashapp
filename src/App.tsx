@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Bottombar from "./Components/Bottombar";
 import Add from "./Components/AddView";
 import {
@@ -10,14 +10,15 @@ import {
 } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
-import StorageHandler, {Deck} from "./Lib/Storage";
+import StorageHandler, { Deck } from "./Lib/Storage";
 import DecksView from "./Components/DecksView";
-import {NewDeck} from "./Components/AddDeckDialog/AddDeckDialog";
+import { NewDeck } from "./Components/AddDeckDialog/AddDeckDialog";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import * as firebase from "firebase";
 import Profile from "./Components/Profile";
-import {Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+import CardsSearch from "./Components/CardsSearch";
 
 interface State {
 	decks: Deck[] | null;
@@ -61,7 +62,7 @@ export default class App extends Component<{}, State> {
 		});
 	}
 
-	async onAddDeck({name, description}: NewDeck) {
+	async onAddDeck({ name, description }: NewDeck) {
 		try {
 			await this.state.storageHandler?.createDeck({
 				name: name,
@@ -75,7 +76,6 @@ export default class App extends Component<{}, State> {
 			console.error(e);
 		}
 	}
-
 
 	async onDeleteDeck(deckUid: string) {
 		try {
@@ -133,7 +133,7 @@ export default class App extends Component<{}, State> {
 			<Snackbar
 				open={true}
 				autoHideDuration={4000}
-				onClose={() => this.setState({unsupportedBrowser: false})}
+				onClose={() => this.setState({ unsupportedBrowser: false })}
 			>
 				<Alert severity="warning">
 					Your browser does not support offline mode. Please use a modern browser to take
@@ -178,6 +178,15 @@ export default class App extends Component<{}, State> {
 								</div>
 							);
 						}}
+					/>
+					<Route
+						path={"/cards"}
+						children={
+							<div className={styles.main}>
+								<CardsSearch decks={this.state.decks} storageHandler={this.state.storageHandler} />
+								<Bottombar />
+							</div>
+						}
 					/>
 					<Route
 						path="/add"

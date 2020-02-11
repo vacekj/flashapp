@@ -2,19 +2,19 @@ import React from "react";
 
 import styles from "./DecksView.module.css";
 import DeckCard from "./DeckCard";
-import {Link} from "react-router-dom";
-import {Deck} from "../../Lib/Storage";
+import { Link } from "react-router-dom";
+import { Deck } from "../../Lib/Storage";
 import Topbar from "../Topbar";
 import PlusIcon from "../../assets/plus.svg";
 import AddDeckDialog from "../AddDeckDialog";
-import {NewDeck} from "../AddDeckDialog/AddDeckDialog";
-import {Skeleton} from "@material-ui/lab";
+import { NewDeck } from "../AddDeckDialog/AddDeckDialog";
+import { Skeleton } from "@material-ui/lab";
 
 function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>) => void }) {
 	return (
 		<div
 			style={{
-				background: "#E2E8F0",
+				background: "#e0ecff",
 				borderRadius: "5px",
 				margin: "15px",
 				padding: "20px",
@@ -64,7 +64,7 @@ export default class DecksView extends React.Component<Props, State> {
 			decks.map((deck, i) => {
 				return (
 					<div className="w-full" key={i}>
-						<DeckCard deck={deck} onDeckDelete={this.props.deleteDeckhandler}/>
+						<DeckCard deck={deck} onDeckDelete={this.props.deleteDeckhandler} />
 					</div>
 				);
 			})
@@ -83,7 +83,7 @@ export default class DecksView extends React.Component<Props, State> {
 				/>
 				<div className={styles.decksView}>
 					<Topbar>Decks</Topbar>
-					<div className={styles.decks}>
+					<div className={styles.decks.concat(" bg-indigo-100")}>
 						{this.props.decks !== null ? (
 							this.renderDecks(this.props.decks)
 						) : (

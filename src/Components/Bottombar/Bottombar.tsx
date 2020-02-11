@@ -21,7 +21,7 @@ const tabs: Tab[] = [
 		icon: homeIcon
 	},
 	{
-		link: "/add",
+		link: "/cards",
 		name: "Cards",
 		icon: cardsIcon
 	},
