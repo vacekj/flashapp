@@ -3,10 +3,10 @@ import Bottombar from "./Components/Bottombar";
 import Add from "./Components/AddView";
 import {
 	BrowserRouter as Router,
+	Redirect,
 	Route,
 	RouteComponentProps,
-	Switch,
-	Redirect
+	Switch
 } from "react-router-dom";
 import styles from "./App.module.css";
 import Review from "./Components/Review";
@@ -47,6 +47,7 @@ export default class App extends Component<{}, State> {
 			firebase.initializeApp(firebaseConfig);
 		}
 		firebase.app().analytics();
+		firebase.app().performance();
 
 		this.state = {
 			decks: null,
@@ -183,7 +184,10 @@ export default class App extends Component<{}, State> {
 						path={"/cards"}
 						children={
 							<div className={styles.main}>
-								<CardsSearch decks={this.state.decks} storageHandler={this.state.storageHandler} />
+								<CardsSearch
+									decks={this.state.decks}
+									storageHandler={this.state.storageHandler}
+								/>
 								<Bottombar />
 							</div>
 						}

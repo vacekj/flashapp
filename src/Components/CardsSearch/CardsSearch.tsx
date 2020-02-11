@@ -67,7 +67,7 @@ class CardsSearch extends React.Component<Props, State> {
 					{this.state.cards &&
 						this.state.cards
 							.filter(card => {
-								if (this.state.filter == "") {
+								if (this.state.filter === "") {
 									return true;
 								}
 
