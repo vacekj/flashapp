@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./DeckCard.module.css";
-import StorageHandler, { Deck } from "../../../Lib/Storage";
+import { Deck } from "../../../Lib/Storage";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import DeckDetail from "../DeckDetail";

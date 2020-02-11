@@ -2,7 +2,6 @@ import React from "react";
 
 import styles from "./DecksView.module.css";
 import DeckCard from "./DeckCard";
-import { Link } from "react-router-dom";
 import { Deck } from "../../Lib/Storage";
 import Topbar from "../Topbar";
 import PlusIcon from "../../assets/plus.svg";

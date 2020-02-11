@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { animated, interpolate, useSprings } from "react-spring";
 import { useGesture } from "react-use-gesture";
-import styles from "./styles.module.css";
 
 import ReviewCard from "./ReviewCard";
+import styles from "./styles.module.css";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20 });
@@ -142,6 +142,6 @@ const getBackground = x => {
 		const s = Math.abs(x - 50) / 50;
 		const v = 1;
 
-		return hsv2rgb(h, s, 1);
+		return hsv2rgb(h, s, v);
 	});
 };

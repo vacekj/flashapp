@@ -1,18 +1,18 @@
-import firebase, {firestore} from "firebase";
+import { app, firestore } from "firebase";
 
 export default class StorageHandler {
-	private firebase: firebase.app.App;
-	private db: firebase.firestore.Firestore;
+	private firebase: app.App;
+	private db: firestore.Firestore;
 	private static DECKS_COLLECTION = "decks";
 	private static CARDS_COLLECTION = "cards";
 
-	constructor(firebase: firebase.app.App) {
+	constructor(firebase: app.App) {
 		this.firebase = firebase;
 		this.db = this.firebase.firestore();
 	}
 
 	private static getTimeStamp(date: Date) {
-		return firebase.firestore.Timestamp.fromDate(date);
+		return firestore.Timestamp.fromDate(date);
 	}
 
 	async createDeck(deck: DeckToSave) {
@@ -94,9 +94,9 @@ export default class StorageHandler {
 			createdAt: StorageHandler.getTimeStamp(new Date()),
 			updatedAt: StorageHandler.getTimeStamp(new Date())
 		};
-		await this.db.collection(StorageHandler.DECKS_COLLECTION).doc(card.deckUid).update(<Partial<Deck>>{
+		await this.db.collection(StorageHandler.DECKS_COLLECTION).doc(card.deckUid).update({
 			lastAdditionAt: StorageHandler.getTimeStamp(new Date())
-		});
+		} as Partial<Deck>);
 		return (await this.db
 			.collection(StorageHandler.CARDS_COLLECTION)
 			.add(doc)) as firestore.DocumentReference<Card>;

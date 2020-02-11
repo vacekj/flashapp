@@ -19,7 +19,6 @@ import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
 import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
-import NativeSelect from "@material-ui/core/NativeSelect";
 
 const DeckComponent = require("../Deck").default;
 
