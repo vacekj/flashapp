@@ -1,9 +1,10 @@
 import React from "react";
-import StorageHandler, {Deck} from "../../../Lib/Storage";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-import {Dialog} from "@material-ui/core";
+import { Dialog } from "@material-ui/core";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
+import { Deck } from "../../../Lib/Storage";
 
 interface Props {
 	deck: Deck;
@@ -14,16 +15,34 @@ interface Props {
 
 const DeckDetail = (props: Props) => {
 	return (
-		<Dialog
-			open={props.open}
-			onClose={props.onClose}
-		>
-			<DialogTitle>
-				<h3>{props.deck.name}</h3>
-			</DialogTitle>
-			<DialogContent>
-				<Button variant={"outlined"} onClick={() => props.onDeckDelete(props.deck.uid)}>
-					Delete
+		<Dialog open={props.open} onClose={props.onClose}>
+			<DialogTitle>{props.deck.name}</DialogTitle>
+			<DialogContent className="p-5">
+				<div>{props.deck.description}</div>
+
+				<div className="flex justify-around">
+					<span className="m-5 ml-0 text-gray-600">
+						Created at:{" "}
+						{props.deck.createdAt.toDate().toLocaleDateString()}
+					</span>
+
+					{props.deck.lastAdditionAt && <span>
+						Last added to:
+						{props.deck.lastAdditionAt?.toDate().toLocaleDateString()}
+					</span>}
+
+				</div>
+
+				<Button
+					variant={"outlined"}
+					color={"secondary"}
+					onClick={() => props.onDeckDelete(props.deck.uid)}
+					style={{
+						marginBottom: "1.25rem"
+					}}
+				>
+					Delete deck
+					<DeleteIcon />
 				</Button>
 			</DialogContent>
 		</Dialog>

@@ -19,6 +19,7 @@ import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
 import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
+import NativeSelect from "@material-ui/core/NativeSelect";
 
 const DeckComponent = require("../Deck").default;
 
@@ -181,6 +182,7 @@ export default function Add(props: Props) {
 						</div>
 					</div>
 				</Topbar>
+
 				<div className={styles.addView}>
 					<div className={styles.deckSelectContainer}>
 						<FormControl className={styles.deckSelect}>
@@ -194,6 +196,7 @@ export default function Add(props: Props) {
 								displayEmpty={true}
 								autoWidth={true}
 								value={state.selectedDeckUid}
+								variant={"filled"}
 								onChange={e => {
 									setState({
 										...state,
