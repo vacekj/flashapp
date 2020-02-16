@@ -81,10 +81,7 @@ class CardsSearch extends React.Component<Props, State> {
 									className="flex flex-col items-center justify-around rounded-lg shadow bg-white text-gray-700 p-4 m-3 mb-0 text-lg text-center"
 									key={card.uid}
 								>
-									<div
-										className="py-3"
-										style={{ borderBottom: "solid 1px #cdcdcd" }}
-									>
+									<div className="py-3 border-b border-solid border-gray-200">
 										{card.front}
 									</div>
 									<div className="py-3">{card.back}</div>
