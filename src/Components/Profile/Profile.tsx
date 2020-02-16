@@ -41,7 +41,9 @@ function Profile(props: Props & RouteComponentProps) {
 						<div className="font-semibold text-xl">
 							{props.user?.displayName ?? props.user?.email}
 						</div>
-						{props.user?.displayName && <div>{props.user?.email}</div>}
+						{props.user?.displayName && (
+							<div className="text-gray-700">{props.user?.email}</div>
+						)}
 					</div>
 				</div>
 
