@@ -15,7 +15,7 @@ interface Props {
 
 function Profile(props: Props & RouteComponentProps) {
 	return (
-		<main className="flex flex-1 flex-col">
+		<main className="flex flex-1 flex-col bg-indigo-100">
 			<Topbar>
 				<div className={styles.topbarFlex}>
 					<span>Profile</span>
@@ -29,14 +29,36 @@ function Profile(props: Props & RouteComponentProps) {
 					</Button>
 				</div>
 			</Topbar>
-			<div className={styles.userInfo}>
-				<img src={props.user?.photoURL ?? defaultUserPicture} alt={"Profile"} />
-				<div className={styles.userName}>
-					{props.user?.displayName ?? props.user?.email}
+
+			<div className="flex flex-col rounded-lg shadow p-5 m-2 bg-white">
+				<div className="flex mb-3">
+					<img
+						className="mr-4 rounded-full h-16 border border-solid border-gray-700"
+						src={props.user?.photoURL ?? defaultUserPicture}
+						alt={"Profile"}
+					/>
+					<div className="w-2/3 flex flex-col justify-center">
+						<div className="font-semibold text-xl">
+							{props.user?.displayName ?? props.user?.email}
+						</div>
+						{props.user?.displayName && <div>{props.user?.email}</div>}
+					</div>
+				</div>
+
+				<div>
+					<div className="text-sm text-gray-700 leading-snug">
+						Member since: {props.user?.metadata.creationTime}
+					</div>
+					<div className="text-sm text-gray-700 leading-snug">
+						Last sign-in: {props.user?.metadata.creationTime}
+					</div>
 				</div>
 			</div>
-			<div className={styles.userStats}>
-				<div className={styles.card}>{props.decks?.length} decks total</div>
+
+			<div className="flex flex-col justify-start">
+				<div className="m-2 mt-0 text-white rounded p-5 bg-indigo-500">
+					{props.decks?.length} decks total
+				</div>
 			</div>
 		</main>
 	);

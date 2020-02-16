@@ -9,31 +9,3 @@
 	height: 30px;
 	margin: 0;
 }
-
-.userInfo {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.userInfo > img {
-	margin: 20px;
-	height: 160px;
-	border-radius: 100px;
-}
-
-.userStats {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	margin-top: 30px;
-}
-
-.card {
-	margin: 10px;
-	padding: 25px;
-	background: linear-gradient(270deg, #2d9cdb 0%, #2f80ed 100%);
-	border-radius: 5px;
-	color: white;
-}
