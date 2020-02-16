@@ -30,7 +30,7 @@ function Profile(props: Props & RouteComponentProps) {
 				</div>
 			</Topbar>
 
-			<div className="flex flex-col rounded-lg shadow p-5 m-2 bg-white">
+			<div className="flex flex-col rounded-lg shadow p-5 m-3 bg-white">
 				<div className="flex mb-3">
 					<img
 						className="mr-4 rounded-full h-16 border border-solid border-gray-700"
@@ -56,7 +56,7 @@ function Profile(props: Props & RouteComponentProps) {
 			</div>
 
 			<div className="flex flex-col justify-start">
-				<div className="m-2 mt-0 text-white rounded p-5 bg-indigo-500">
+				<div className="m-3 mt-0 text-white rounded p-5 bg-indigo-500">
 					{props.decks?.length} decks total
 				</div>
 			</div>
