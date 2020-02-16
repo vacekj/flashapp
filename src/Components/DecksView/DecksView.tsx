@@ -68,7 +68,9 @@ export default class DecksView extends React.Component<Props, State> {
 				);
 			})
 		) : (
-			<div className={styles.noDecks}>I see no decks. Why not add one using the button below?</div>
+			<div className={styles.noDecks}>
+				I see no decks. Why not add one using the button below?
+			</div>
 		);
 	}
 
@@ -80,9 +82,9 @@ export default class DecksView extends React.Component<Props, State> {
 					onSave={this.props.addDeckHandler}
 					onClose={this.closeDialog.bind(this)}
 				/>
-				<div className={styles.decksView}>
+				<div className="flex flex-col">
 					<Topbar>Decks</Topbar>
-					<div className={styles.decks.concat(" bg-indigo-100")}>
+					<div className="overflow-x-hidden h-full bg-indigo-100">
 						{this.props.decks !== null ? (
 							this.renderDecks(this.props.decks)
 						) : (

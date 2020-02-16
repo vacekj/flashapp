@@ -80,7 +80,6 @@ export default class App extends Component<{}, State> {
 
 	async onDeleteDeck(deckUid: string) {
 		try {
-			console.log("");
 			await this.state.storageHandler?.deleteDeck(deckUid);
 			const decks = await this.state.storageHandler?.getDecksOfCurrentUser();
 			return this.setState({

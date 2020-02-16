@@ -1,22 +1,30 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 
-import styles from "./BottombarTab.module.css";
-
 interface Props {
-    link: string;
-    name: string;
-    icon: string;
-    active?: boolean;
+	link: string;
+	name: string;
+	icon: (props: React.ComponentProps<"svg">) => JSX.Element;
+	active?: boolean;
 }
 
 function BottombarTab(props: Props) {
-    return (
-        <Link to={props.link} className={[(props.active ? styles.active : ""), styles.tab].join(" ")}>
-            <img src={props.icon} alt={props.name}/>
-            <span>{props.name}</span>
-        </Link>
-    );
+	return (
+		<Link to={props.link} className="px-2 pt-1 flex flex-col items-center">
+			<props.icon
+				className={`transition ease-out duration-300 w-6 h-6 stroke-current fill-current ${
+					props.active ? "text-indigo-500" : "text-gray-500"
+				}`}
+			/>
+			<span
+				className={`${
+					props.active ? "text-indigo-500" : "text-gray-500"
+				} font-medium text-base transition ease-out duration-300`}
+			>
+				{props.name}
+			</span>
+		</Link>
+	);
 }
 
 export default BottombarTab;

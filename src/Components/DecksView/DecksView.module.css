@@ -1,47 +1,33 @@
-.decksView {
-    display: flex;
-    flex-direction: column;
-}
-
-.decks {
-    overflow-x: hidden;
-    height: 100%;
-}
-
-.link {
-    width: 100%;
-}
-
 a {
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .noDecks {
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-    justify-content: space-between;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: space-between;
 
-    margin: 15px;
-    padding: 20px;
+	margin: 15px;
+	padding: 20px;
 
-    color: #707994;
+	color: #707994;
 
-    border-radius: 5px;
-    text-align: center;
+	border-radius: 5px;
+	text-align: center;
 }
 
 .skeletonCard {
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-    justify-content: space-between;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: space-between;
 
-    margin: 15px;
-    padding: 20px;
+	margin: 15px;
+	padding: 20px;
 
-    background: white;
-    color: #3E465E;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    border-radius: 5px 5px 5px 5px;
+	background: white;
+	color: #3e465e;
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	border-radius: 5px 5px 5px 5px;
 }
