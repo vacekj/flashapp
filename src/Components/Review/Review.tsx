@@ -46,7 +46,7 @@ export default class Review extends React.Component<Props, State> {
 		});
 	}
 
-	onSwipe({ index, direction, cardId }: { index: number; direction: number, cardId: number }) {
+	onSwipe({ index, direction, cardId }: { index: number; direction: number; cardId: number }) {
 		console.log(`Card swiped. Index: ${index} | Direction: ${direction} | cardId: ${cardId}`);
 	}
 
@@ -58,19 +58,18 @@ export default class Review extends React.Component<Props, State> {
 				}}
 			>
 				<ReviewTopbar
-					progressIndicatorText={"15"}
+					progressIndicatorText={
+						this.state.deck ? this.state.cards.length + " cards left" : ""
+					}
 					deckName={this.state.deck.name}
 				/>
 
-				<div className={styles.reviewContainer} >
+				<div className={styles.reviewContainer}>
 					<>
-						<DeckComponent
-							onSwipe={this.onSwipe.bind(this)}
-							cards={this.state.cards}
-						/>
+						<DeckComponent onSwipe={this.onSwipe.bind(this)} cards={this.state.cards} />
 					</>
-				</div >
-			</div >
+				</div>
+			</div>
 		);
 	}
 }
