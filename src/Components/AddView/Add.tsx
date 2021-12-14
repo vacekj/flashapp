@@ -1,24 +1,26 @@
 import React, { useState } from "react";
 
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Divider from "@material-ui/core/Divider";
-import Hidden from "@material-ui/core/Hidden";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Divider from "@mui/material/Divider";
+import Hidden from "@mui/material/Hidden";
 
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import StorageHandler, { Card, CardToAdd, Deck } from "../../Lib/Storage";
+import { Card, CardToAdd, createCard, deleteCard, useDecksOfCurrentUser } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 
-import NoteAddRoundedIcon from "@material-ui/icons/NoteAddRounded";
-import PlayArrowRoundedIcon from "@material-ui/icons/PlayArrowRounded";
-import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import UndoRoundedIcon from "@material-ui/icons/UndoRounded";
-import { Button, Dialog, IconButton, makeStyles, Snackbar } from "@material-ui/core";
+import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
+import { Button, Dialog, IconButton, Snackbar } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { getDoc } from "@firebase/firestore";
 
 const DeckComponent = require("../Deck").default;
 
@@ -28,14 +30,9 @@ const useStyles = makeStyles({
 	closeButton: {
 		position: "absolute",
 		right: 0,
-		zIndex: 30000
-	}
+		zIndex: 30000,
+	},
 });
-
-interface Props {
-	decks: Deck[];
-	storageHandler: StorageHandler;
-}
 
 interface State {
 	selectedDeckUid: string | null;
@@ -44,13 +41,15 @@ interface State {
 	previewing: boolean;
 }
 
-export default function Add(props: Props) {
+export default function Add() {
+	const { decks } = useDecksOfCurrentUser();
+
 	const [previousCard, setPreviousCard] = useState<{ front: string; back: string; uid: string }>({
 		front: "",
 		back: "",
-		uid: ""
+		uid: "",
 	});
-	const lastAddedToDeck = props.decks.sort((a, b) => {
+	const lastAddedToDeck = decks.sort((a, b) => {
 		return (b.lastAdditionAt?.seconds || 0) - (a.lastAdditionAt?.seconds || 0);
 	})[0];
 
@@ -58,7 +57,7 @@ export default function Add(props: Props) {
 		selectedDeckUid: lastAddedToDeck.uid,
 		front: "",
 		back: "",
-		previewing: false
+		previewing: false,
 	});
 
 	const [snackbarShown, setSnackbarShown] = useState(false);
@@ -74,9 +73,10 @@ export default function Add(props: Props) {
 			>
 				<IconButton
 					classes={{
-						root: classes.closeButton
+						root: classes.closeButton,
 					}}
 					onClick={() => setState({ ...state, previewing: false })}
+					size="large"
 				>
 					<CloseRoundedIcon fontSize={"large"} />
 				</IconButton>
@@ -86,8 +86,8 @@ export default function Add(props: Props) {
 							front: state.front,
 							back: state.back,
 							id: -1,
-							deckId: -1
-						}
+							deckId: -1,
+						},
 					]}
 					onSwipe={() => {}}
 				/>
@@ -96,7 +96,7 @@ export default function Add(props: Props) {
 			<Snackbar
 				anchorOrigin={{
 					vertical: "bottom",
-					horizontal: "center"
+					horizontal: "center",
 				}}
 				open={snackbarShown}
 				autoHideDuration={1000}
@@ -111,12 +111,12 @@ export default function Add(props: Props) {
 							setState({
 								...state,
 								front: previousCard.front,
-								back: previousCard.back
+								back: previousCard.back,
 							});
-							await props.storageHandler.deleteCard(previousCard.uid);
+							await deleteCard(previousCard.uid);
 						}}
 						style={{
-							color: "orange"
+							color: "orange",
 						}}
 						endIcon={<UndoRoundedIcon />}
 					>
@@ -128,7 +128,7 @@ export default function Add(props: Props) {
 			<div className={styles.addContainer}>
 				<Topbar
 					style={{
-						padding: "0 0 0 12px"
+						padding: "0 0 0 12px",
 					}}
 				>
 					<div className={styles.topbarFlex}>
@@ -137,6 +137,7 @@ export default function Add(props: Props) {
 							<IconButton
 								disabled={state.front.length + state.back.length < 1}
 								onClick={() => setState({ ...state, previewing: true })}
+								size="large"
 							>
 								<PlayArrowRoundedIcon fontSize={"large"} />
 							</IconButton>
@@ -153,28 +154,27 @@ export default function Add(props: Props) {
 									const card: CardToAdd = {
 										front: state.front,
 										back: state.back,
-										deckUid: state.selectedDeckUid
+										deckUid: state.selectedDeckUid,
 									};
-									const addedCardRef = await props.storageHandler.createCard(
-										card
-									);
-									const addedCard = await addedCardRef.get();
+									const addedCardRef = await createCard(card);
+									const addedCard = await getDoc(addedCardRef);
 									setPreviousCard({
 										...addedCard.data(),
-										uid: addedCard.id
+										uid: addedCard.id,
 									} as Card);
 									setState({
 										...state,
 										front: "",
-										back: ""
+										back: "",
 									});
 									setSnackbarShown(true);
 									setTimeout(() => setSnackbarShown(false), 3_000);
 								}}
 								classes={{
 									root: classes.root,
-									disabled: classes.colorDisabled
+									disabled: classes.colorDisabled,
 								}}
+								size="large"
 							>
 								<NoteAddRoundedIcon fontSize={"large"} />
 							</IconButton>
@@ -196,17 +196,17 @@ export default function Add(props: Props) {
 								autoWidth={true}
 								value={state.selectedDeckUid}
 								variant={"filled"}
-								onChange={e => {
+								onChange={(e) => {
 									setState({
 										...state,
-										selectedDeckUid: e.target.value as string
+										selectedDeckUid: e.target.value as string,
 									});
 								}}
 							>
 								<MenuItem value="" disabled>
 									Select a deck
 								</MenuItem>
-								{props.decks
+								{decks
 									.sort((a, b) => {
 										return (
 											(b.lastAdditionAt?.seconds || 0) -
@@ -234,7 +234,7 @@ export default function Add(props: Props) {
 							onChange={(text: string) => {
 								setState({
 									...state,
-									front: text
+									front: text,
 								});
 							}}
 							value={state.front}
@@ -244,7 +244,7 @@ export default function Add(props: Props) {
 							<Divider
 								variant={"middle"}
 								style={{
-									width: "30%"
+									width: "30%",
 								}}
 							/>
 						</Hidden>
@@ -254,7 +254,7 @@ export default function Add(props: Props) {
 							onChange={(text: string) => {
 								setState({
 									...state,
-									back: text
+									back: text,
 								});
 							}}
 							value={state.back}

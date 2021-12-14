@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./DeckCard.module.css";
 import { Deck } from "../../../Lib/Storage";
 import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
+import Button from "@mui/material/Button";
 import DeckDetail from "../DeckDetail";
 
 interface Props {
@@ -29,7 +29,7 @@ export default function DeckCard(props: Props) {
 					style={{
 						width: `${props.score ?? 30}%`,
 						borderRadius: props.score === 100 ? "5px 5px 0 0" : "5px 5px 5px 0",
-						opacity: `${(props.score ?? 0) + 30}%`
+						opacity: `${(props.score ?? 0) + 30}%`,
 					}}
 				/>
 				<div className="flex p-4 justify-between items-center">
@@ -51,9 +51,7 @@ export default function DeckCard(props: Props) {
 const Col = (props: React.ComponentProps<"div">) => (
 	<div
 		{...props}
-		className={"flex flex-col justify-around items-start ".concat(
-			props.className ?? ""
-		)}
+		className={"flex flex-col justify-around items-start ".concat(props.className ?? "")}
 	>
 		{props.children}
 	</div>

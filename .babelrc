@@ -1,9 +1,0 @@
-{
-  "plugins": [
-    [
-      "react-css-modules",
-      {
-      }
-    ]
-  ]
-}

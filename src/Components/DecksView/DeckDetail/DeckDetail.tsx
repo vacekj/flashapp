@@ -1,9 +1,9 @@
 import React from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Button from "@material-ui/core/Button";
-import { Dialog } from "@material-ui/core";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
+import DeleteIcon from "@mui/icons-material/Delete";
+import Button from "@mui/material/Button";
+import { Dialog } from "@mui/material";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 import { Deck } from "../../../Lib/Storage";
 
 interface Props {
@@ -22,15 +22,15 @@ const DeckDetail = (props: Props) => {
 
 				<div className="flex justify-around">
 					<span className="m-5 ml-0 text-gray-600">
-						Created at:{" "}
-						{props.deck.createdAt.toDate().toLocaleDateString()}
+						Created at: {props.deck.createdAt.toDate().toLocaleDateString()}
 					</span>
 
-					{props.deck.lastAdditionAt && <span>
-						Last added to:
-						{props.deck.lastAdditionAt?.toDate().toLocaleDateString()}
-					</span>}
-
+					{props.deck.lastAdditionAt && (
+						<span>
+							Last added to:
+							{props.deck.lastAdditionAt?.toDate().toLocaleDateString()}
+						</span>
+					)}
 				</div>
 
 				<Button
@@ -38,7 +38,7 @@ const DeckDetail = (props: Props) => {
 					color={"secondary"}
 					onClick={() => props.onDeckDelete(props.deck.uid)}
 					style={{
-						marginBottom: "1.25rem"
+						marginBottom: "1.25rem",
 					}}
 				>
 					Delete deck

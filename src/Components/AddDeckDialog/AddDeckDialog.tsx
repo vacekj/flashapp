@@ -1,15 +1,17 @@
 import * as React from "react";
-import {useState} from "react";
+import { useState } from "react";
 import {
-	Button,
 	CircularProgress,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogTitle,
-	makeStyles,
-	TextField
-} from "@material-ui/core";
+	TextField,
+} from "@mui/material";
+
+import { Button } from "@chakra-ui/react";
+
+import makeStyles from "@mui/styles/makeStyles";
 
 export interface NewDeck {
 	name: string;
@@ -24,16 +26,16 @@ interface Props {
 
 const useStyles = makeStyles({
 	label: {
-		color: "#bdbdbd"
+		color: "#bdbdbd",
 	},
 	colorPrimary: {
-		color: "white"
-	}
+		color: "white",
+	},
 });
 
 const AddDeckDialog = (props: Props) => {
 	const [state, setState] = useState<NewDeck>({
-		name: ""
+		name: "",
 	});
 
 	const [loading, setLoading] = useState(false);
@@ -51,10 +53,10 @@ const AddDeckDialog = (props: Props) => {
 					label="Deck name"
 					fullWidth
 					autoComplete={"off"}
-					onChange={e => {
+					onChange={(e) => {
 						setState({
 							...state,
-							name: e.target.value
+							name: e.target.value,
 						});
 					}}
 				/>
@@ -64,22 +66,16 @@ const AddDeckDialog = (props: Props) => {
 					id="description"
 					label="Deck description"
 					fullWidth
-					onChange={e => {
+					onChange={(e) => {
 						setState({
 							...state,
-							description: e.target.value
+							description: e.target.value,
 						});
 					}}
 				/>
 			</DialogContent>
 			<DialogActions>
-				<Button
-					onClick={props.onClose}
-					classes={{
-						label: styles.label
-					}}
-					color="primary"
-				>
+				<Button onClick={props.onClose} color="primary">
 					Cancel
 				</Button>
 				<Button
@@ -93,9 +89,16 @@ const AddDeckDialog = (props: Props) => {
 					variant={"contained"}
 					disabled={state.name.length < 1}
 				>
-					{loading ? <CircularProgress classes={{
-						colorPrimary: styles.colorPrimary
-					}} size={"24px"} /> : "Create deck"}
+					{loading ? (
+						<CircularProgress
+							classes={{
+								colorPrimary: styles.colorPrimary,
+							}}
+							size={"24px"}
+						/>
+					) : (
+						"Create deck"
+					)}
 				</Button>
 			</DialogActions>
 		</Dialog>

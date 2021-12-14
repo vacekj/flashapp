@@ -1,96 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../Topbar";
-import StorageHandler, { Card, Deck } from "../../Lib/Storage";
-import AddRoundedIcon from "@material-ui/icons/AddRounded";
+import { Card, Deck, getCardsOfDeck, useDecksOfCurrentUser } from "../../Lib/Storage";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { Link } from "react-router-dom";
-import { Skeleton } from "@material-ui/lab";
-import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
+import { Skeleton } from "@mui/material";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
-interface State {
-	cards: Card[] | null;
-	filter: string;
-}
+export default function CardsSearch() {
+	const { decks } = useDecksOfCurrentUser();
+	const [cards, setCards] = useState<Card[]>([]);
+	const [filter, setFilter] = useState("");
 
-interface Props {
-	storageHandler: StorageHandler;
-	decks: Deck[] | null;
-}
+	useEffect(() => {
+		decks &&
+			Promise.all(decks.map((deck) => getCardsOfDeck(deck.uid)))
+				.then((arrays) => arrays.flat())
+				.then((cards) => setCards(cards));
+	}, [decks]);
 
-class CardsSearch extends React.Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			cards: null,
-			filter: ""
-		};
-	}
+	return (
+		<div className="bg-indigo-100">
+			<Topbar className="flex justify-between items-center bg-white">
+				Cards
+				<Link to={"/add"} className="flex items-center">
+					<AddRoundedIcon fontSize={"large"} />
+				</Link>
+			</Topbar>
+			<div className="flex flex-col justify-around">
+				<Search onSubmit={(value) => setFilter(value)} />
+				{cards === null &&
+					Array(3)
+						.fill(1)
+						.map((_, key) => (
+							<div
+								key={key}
+								className="flex flex-col items-center justify-around rounded-lg shadow bg-white text-gray-700 p-4 m-3 mb-0 text-lg text-center"
+							>
+								<Skeleton variant="text" height={30} width={120} />
+								<Skeleton variant="text" height={30} width={120} />
+							</div>
+						))}
+				{cards &&
+					cards
+						.filter((card) => {
+							if (filter === "") {
+								return true;
+							}
 
-	componentDidMount(): void {
-		this.props.decks &&
-			Promise.all(
-				this.props.decks.map(deck => this.props.storageHandler.getCardsOfDeck(deck.uid))
-			)
-				.then(arrays => arrays.flat())
-				.then(cards => this.setState({ cards }))
-				.catch(e => console.error(e));
-	}
-
-	render() {
-		return (
-			<div className="bg-indigo-100">
-				<Topbar className="flex justify-between items-center bg-white">
-					Cards
-					<Link to={"/add"} className="flex items-center">
-						<AddRoundedIcon fontSize={"large"} />
-					</Link>
-				</Topbar>
-				<div className="flex flex-col justify-around">
-					<Search
-						onSubmit={value =>
-							this.setState({
-								filter: value
-							})
-						}
-					/>
-					{this.state.cards === null &&
-						Array(3)
-							.fill(1)
-							.map((_, key) => (
-								<div
-									key={key}
-									className="flex flex-col items-center justify-around rounded-lg shadow bg-white text-gray-700 p-4 m-3 mb-0 text-lg text-center"
-								>
-									<Skeleton variant="text" height={30} width={120} />
-									<Skeleton variant="text" height={30} width={120} />
+							return card.front.includes(filter) || card.back.includes(filter);
+						})
+						.map((card) => (
+							<div
+								className="flex flex-col items-center justify-around rounded-lg shadow bg-white text-gray-700 p-4 m-3 mb-0 text-lg text-center"
+								key={card.uid}
+							>
+								<div className="py-3 border-b border-solid border-gray-200">
+									{card.front}
 								</div>
-							))}
-					{this.state.cards &&
-						this.state.cards
-							.filter(card => {
-								if (this.state.filter === "") {
-									return true;
-								}
-
-								return (
-									card.front.includes(this.state.filter) ||
-									card.back.includes(this.state.filter)
-								);
-							})
-							.map(card => (
-								<div
-									className="flex flex-col items-center justify-around rounded-lg shadow bg-white text-gray-700 p-4 m-3 mb-0 text-lg text-center"
-									key={card.uid}
-								>
-									<div className="py-3 border-b border-solid border-gray-200">
-										{card.front}
-									</div>
-									<div className="py-3">{card.back}</div>
-								</div>
-							))}
-				</div>
+								<div className="py-3">{card.back}</div>
+							</div>
+						))}
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 interface SearchProps {
@@ -101,7 +73,7 @@ function Search(props: SearchProps) {
 	const [value, setValue] = useState("");
 	return (
 		<form
-			onSubmit={e => {
+			onSubmit={(e) => {
 				e.preventDefault();
 				props.onSubmit(value);
 			}}
@@ -109,7 +81,7 @@ function Search(props: SearchProps) {
 		>
 			<input
 				type="text"
-				onChange={e => {
+				onChange={(e) => {
 					setValue(e.target.value);
 					props.onSubmit(e.target.value);
 				}}
@@ -120,5 +92,3 @@ function Search(props: SearchProps) {
 		</form>
 	);
 }
-
-export default CardsSearch;

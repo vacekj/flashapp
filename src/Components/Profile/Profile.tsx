@@ -1,19 +1,16 @@
 import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import firebase from "firebase";
-import { Deck } from "../../Lib/Storage";
+import { Deck, useDecksOfCurrentUser } from "../../Lib/Storage";
 import Topbar from "../Topbar";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import styles from "./Profile.module.css";
 import defaultUserPicture from "../../assets/defaultUserPicture.svg";
+import { useRouter } from "next/router";
+import { useUser } from "../../Lib/Auth";
 
-interface Props {
-	firebase: firebase.app.App;
-	user?: firebase.User | null;
-	decks: Deck[] | null;
-}
-
-function Profile(props: Props & RouteComponentProps) {
+function Profile() {
+	const router = useRouter();
+	const { user, signOut } = useUser();
+	const { decks } = useDecksOfCurrentUser();
 	return (
 		<main className="flex flex-1 flex-col bg-indigo-100">
 			<Topbar>
@@ -21,8 +18,8 @@ function Profile(props: Props & RouteComponentProps) {
 					<span>Profile</span>
 					<Button
 						onClick={async () => {
-							await props.firebase.auth().signOut();
-							props.history.push("/signin");
+							await signOut();
+							await router.push("/signin");
 						}}
 					>
 						Sign out
@@ -34,36 +31,33 @@ function Profile(props: Props & RouteComponentProps) {
 				<div className="flex mb-3">
 					<img
 						className="mr-4 rounded-full h-16 border border-solid border-gray-700"
-						src={props.user?.photoURL ?? defaultUserPicture}
+						src={user?.photoURL ?? defaultUserPicture}
 						alt={"Profile"}
 					/>
 					<div className="w-2/3 flex flex-col justify-center">
 						<div className="font-semibold text-xl">
-							{props.user?.displayName ?? props.user?.email}
+							{user?.displayName ?? user?.email}
 						</div>
-						{props.user?.displayName && (
-							<div className="text-gray-700">{props.user?.email}</div>
-						)}
+						{user?.displayName && <div className="text-gray-700">{user?.email}</div>}
 					</div>
 				</div>
 
 				<div>
 					<div className="text-sm text-gray-700 leading-snug">
-						Member since: {props.user?.metadata.creationTime}
+						Member since: {user?.metadata.creationTime}
 					</div>
 					<div className="text-sm text-gray-700 leading-snug">
-						Last sign-in: {props.user?.metadata.creationTime}
+						Last sign-in: {user?.metadata.creationTime}
 					</div>
 				</div>
 			</div>
 
 			<div className="flex flex-col justify-start">
 				<div className="m-3 mt-0 text-white rounded p-5 bg-indigo-500">
-					{props.decks?.length} decks total
+					{decks?.length} decks total
 				</div>
 			</div>
 		</main>
 	);
 }
-
-export default withRouter(Profile);
+export default Profile;

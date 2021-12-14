@@ -1,7 +1,7 @@
 import React from "react";
-import { RouteChildrenProps, withRouter } from "react-router-dom";
 import styles from "./Bottombar.module.css";
 import BottombarTab from "./BottombarTab";
+import { useRouter } from "next/router";
 
 interface Tab {
 	link: string;
@@ -48,21 +48,23 @@ const tabs: Tab[] = [
 	{
 		link: "/",
 		name: "Home",
-		icon: HomeIcon
+		icon: HomeIcon,
 	},
 	{
 		link: "/cards",
 		name: "Cards",
-		icon: CardsIcon
+		icon: CardsIcon,
 	},
 	{
 		link: "/profile",
 		name: "Profile",
-		icon: ProfileIcon
-	}
+		icon: ProfileIcon,
+	},
 ];
 
-function Bottombar(props: RouteChildrenProps) {
+function Bottombar() {
+	const router = useRouter();
+
 	return (
 		<div className={styles.bottomBar}>
 			{tabs.map((tab, i) => {
@@ -71,7 +73,7 @@ function Bottombar(props: RouteChildrenProps) {
 						link={tab.link}
 						name={tab.name}
 						icon={tab.icon}
-						active={props.match?.path === tab.link}
+						active={router.asPath.includes(tab.link)}
 						key={i}
 					/>
 				);
@@ -80,4 +82,4 @@ function Bottombar(props: RouteChildrenProps) {
 	);
 }
 
-export default withRouter(Bottombar);
+export default Bottombar;

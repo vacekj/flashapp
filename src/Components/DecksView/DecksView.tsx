@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
 import styles from "./DecksView.module.css";
 import DeckCard from "./DeckCard";
-import { Deck } from "../../Lib/Storage";
+import { Deck, DECKS_COLLECTION, useDecksOfCurrentUser, useFirestore } from "../../Lib/Storage";
 import Topbar from "../Topbar";
 import PlusIcon from "../../assets/plus.svg";
 import AddDeckDialog from "../AddDeckDialog";
 import { NewDeck } from "../AddDeckDialog/AddDeckDialog";
-import { Skeleton } from "@material-ui/lab";
+import { Skeleton } from "@mui/material";
+import { useFirebaseApp } from "../../Lib/Firebase";
+import { addDoc, collection, deleteDoc, doc, setDoc } from "@firebase/firestore";
 
 function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>) => void }) {
 	return (
@@ -19,7 +21,7 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 				padding: "20px",
 				display: "flex",
 				alignItems: "center",
-				justifyContent: "center"
+				justifyContent: "center",
 			}}
 			onClick={props.onClick}
 		>
@@ -27,76 +29,56 @@ function AddDeckCard(props: { onClick: (e: React.SyntheticEvent<HTMLDivElement>)
 		</div>
 	);
 }
+function renderDecks(decks: Deck[]) {
+	const db = useFirestore();
 
-interface Props {
-	decks: Deck[] | null;
-	addDeckHandler: (newDeck: NewDeck) => Promise<void>;
-	deleteDeckhandler: (deckUid: string) => Promise<void>;
-}
-
-interface State {
-	dialogOpen: boolean;
-}
-
-export default class DecksView extends React.Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			dialogOpen: false
-		};
-	}
-
-	openDialog() {
-		this.setState({
-			dialogOpen: true
-		});
-	}
-
-	closeDialog() {
-		this.setState({
-			dialogOpen: false
-		});
-	}
-
-	renderDecks(decks: Deck[]) {
-		return decks.length > 0 ? (
-			decks.map((deck, i) => {
-				return (
-					<div className="w-full" key={i}>
-						<DeckCard deck={deck} onDeckDelete={this.props.deleteDeckhandler} />
-					</div>
-				);
-			})
-		) : (
-			<div className={styles.noDecks}>
-				I see no decks. Why not add one using the button below?
-			</div>
-		);
-	}
-
-	render() {
-		return (
-			<>
-				<AddDeckDialog
-					open={this.state.dialogOpen}
-					onSave={this.props.addDeckHandler}
-					onClose={this.closeDialog.bind(this)}
-				/>
-				<div className="flex flex-col">
-					<Topbar>Decks</Topbar>
-					<div className="overflow-x-hidden h-full bg-indigo-100">
-						{this.props.decks !== null ? (
-							this.renderDecks(this.props.decks)
-						) : (
-							<div className={styles.skeletonCard}>
-								<Skeleton variant="text" height={30} width={120} />
-								<Skeleton variant="text" width={300} />
-							</div>
-						)}
-						<AddDeckCard onClick={this.openDialog.bind(this)} />
-					</div>
+	return decks.length > 0 ? (
+		decks.map((deck, i) => {
+			return (
+				<div className="w-full" key={i}>
+					<DeckCard
+						deck={deck}
+						onDeckDelete={async (deckUid: string) => {
+							await deleteDoc(doc(db, DECKS_COLLECTION, deckUid));
+						}}
+					/>
 				</div>
-			</>
-		);
-	}
+			);
+		})
+	) : (
+		<div className={styles.noDecks}>
+			I see no decks. Why not add one using the button below?
+		</div>
+	);
+}
+
+export function DecksView() {
+	const [dialogOpen, setDialogOpen] = useState(false);
+	const db = useFirestore();
+	const { decks } = useDecksOfCurrentUser();
+	return (
+		<>
+			<AddDeckDialog
+				open={dialogOpen}
+				onSave={async (deck) => {
+					await addDoc(collection(db, DECKS_COLLECTION), deck);
+				}}
+				onClose={() => setDialogOpen(false)}
+			/>
+			<div className="flex flex-col">
+				<Topbar>Decks</Topbar>
+				<div className="overflow-x-hidden h-full bg-indigo-100">
+					{decks !== null ? (
+						renderDecks(decks)
+					) : (
+						<div className={styles.skeletonCard}>
+							<Skeleton variant="text" height={30} width={120} />
+							<Skeleton variant="text" width={300} />
+						</div>
+					)}
+					<AddDeckCard onClick={() => setDialogOpen(true)} />
+				</div>
+			</div>
+		</>
+	);
 }
