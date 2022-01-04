@@ -1,17 +1,23 @@
 import * as React from "react";
 import { useState } from "react";
 import {
+	Button,
 	CircularProgress,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	TextField,
-} from "@mui/material";
-
-import { Button } from "@chakra-ui/react";
-
-import makeStyles from "@mui/styles/makeStyles";
+	FormControl,
+	FormHelperText,
+	FormLabel,
+	Input,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
+	Textarea,
+	useStyles,
+} from "@chakra-ui/react";
+import deck from "@/src/Components/Deck";
 
 export interface NewDeck {
 	name: string;
@@ -24,84 +30,65 @@ interface Props {
 	onClose: () => void;
 }
 
-const useStyles = makeStyles({
-	label: {
-		color: "#bdbdbd",
-	},
-	colorPrimary: {
-		color: "white",
-	},
-});
-
 const AddDeckDialog = (props: Props) => {
-	const [state, setState] = useState<NewDeck>({
-		name: "",
-	});
-
-	const [loading, setLoading] = useState(false);
-
-	const styles = useStyles();
+	const [deckName, setDeckName] = useState("");
+	const [deckDescription, setDeckDescription] = useState("");
 
 	return (
-		<Dialog open={props.open} onClose={props.onClose}>
-			<DialogTitle>Create a new deck</DialogTitle>
-			<DialogContent>
-				<TextField
-					autoFocus
-					margin="dense"
-					id="name"
-					label="Deck name"
-					fullWidth
-					autoComplete={"off"}
-					onChange={(e) => {
-						setState({
-							...state,
-							name: e.target.value,
-						});
-					}}
-				/>
-				<TextField
-					multiline
-					margin="dense"
-					id="description"
-					label="Deck description"
-					fullWidth
-					onChange={(e) => {
-						setState({
-							...state,
-							description: e.target.value,
-						});
-					}}
-				/>
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={props.onClose} color="primary">
-					Cancel
-				</Button>
-				<Button
-					onClick={async () => {
-						setLoading(true);
-						await props.onSave(state);
-						props.onClose();
-						setLoading(false);
-					}}
-					color="primary"
-					variant={"contained"}
-					disabled={state.name.length < 1}
-				>
-					{loading ? (
-						<CircularProgress
-							classes={{
-								colorPrimary: styles.colorPrimary,
-							}}
-							size={"24px"}
-						/>
-					) : (
-						"Create deck"
-					)}
-				</Button>
-			</DialogActions>
-		</Dialog>
+		<Modal isOpen={props.open} onClose={props.onClose}>
+			<ModalOverlay />
+			<ModalContent m={10}>
+				<ModalHeader>Create a new Deck</ModalHeader>
+				<ModalCloseButton />
+				<ModalBody>
+					<form
+						onSubmit={() => {
+							if (deckName.length === 0) {
+								return;
+							}
+							props.onSave({
+								name: deckName,
+								description: deckDescription,
+							});
+						}}
+					>
+						<FormControl isRequired>
+							<FormLabel htmlFor="name">Name</FormLabel>
+							<Input
+								onChange={(e) => setDeckName(e.target.value)}
+								id="name"
+								type="name"
+							/>
+						</FormControl>
+						{/*<FormControl>*/}
+						{/*	<FormLabel htmlFor="description">Description</FormLabel>*/}
+						{/*	<Textarea*/}
+						{/*		onChange={(e) => setDeckDescription(e.target.value)}*/}
+						{/*		id="description"*/}
+						{/*		type="description"*/}
+						{/*	/>*/}
+						{/*</FormControl>*/}
+					</form>
+				</ModalBody>
+
+				<ModalFooter>
+					<Button
+						colorScheme="blue"
+						onClick={() => {
+							if (deckName.length === 0) {
+								return;
+							}
+							props.onSave({
+								name: deckName,
+								description: deckDescription,
+							});
+						}}
+					>
+						Add
+					</Button>
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
 	);
 };
 

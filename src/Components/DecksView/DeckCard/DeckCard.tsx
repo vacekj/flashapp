@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import styles from "./DeckCard.module.css";
-import { Deck } from "../../../Lib/Storage";
-import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
+import { Deck } from "@/src/Lib/Storage";
+import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import DeckDetail from "../DeckDetail";
+import Link from "next/link";
 
 interface Props {
 	deck: Deck;
@@ -23,36 +22,20 @@ export default function DeckCard(props: Props) {
 					setDetailOpen(false);
 				}}
 			/>
-			<div className={styles.deckCard}>
-				<div
-					className={styles.scoreIndicator}
-					style={{
-						width: `${props.score ?? 30}%`,
-						borderRadius: props.score === 100 ? "5px 5px 0 0" : "5px 5px 5px 0",
-						opacity: `${(props.score ?? 0) + 30}%`,
-					}}
-				/>
-				<div className="flex p-4 justify-between items-center">
-					<Col onClick={() => setDetailOpen(true)} className="flex-grow">
-						<span className="font-semibold text-2xl">{props.deck.name}</span>
-						<div className={styles.lastSession}>{props.deck.description}</div>
-					</Col>
-					<Col className="items-end">
-						<Link to={"/decks/" + props.deck.uid}>
-							<Button variant={"outlined"}>Review</Button>
-						</Link>
-					</Col>
-				</div>
-			</div>
+			<HStack p={5} justifyContent={"space-between"} bg={"gray.100"} mx={3} rounded={"lg"}>
+				<Box onClick={() => setDetailOpen(true)} flexGrow={2}>
+					<Text fontSize={"lg"} fontWeight={"bold"}>
+						{props.deck.name}
+					</Text>
+				</Box>
+				<Box className="items-end">
+					<Link href={"/decks/" + props.deck.uid}>
+						<Button variant={"solid"} color={""} as={"a"}>
+							Review
+						</Button>
+					</Link>
+				</Box>
+			</HStack>
 		</>
 	);
 }
-
-const Col = (props: React.ComponentProps<"div">) => (
-	<div
-		{...props}
-		className={"flex flex-col justify-around items-start ".concat(props.className ?? "")}
-	>
-		{props.children}
-	</div>
-);

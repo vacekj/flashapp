@@ -1,11 +1,11 @@
 import * as React from "react";
 import { Deck, useDecksOfCurrentUser } from "../../Lib/Storage";
 import Topbar from "../Topbar";
-import { Button } from "@mui/material";
 import styles from "./Profile.module.css";
-import defaultUserPicture from "../../assets/defaultUserPicture.svg";
 import { useRouter } from "next/router";
 import { useUser } from "../../Lib/Auth";
+import { Button, Icon } from "@chakra-ui/react";
+import { HiOutlineUser } from "react-icons/hi";
 
 function Profile() {
 	const router = useRouter();
@@ -29,10 +29,13 @@ function Profile() {
 
 			<div className="flex flex-col rounded-lg shadow p-5 m-3 bg-white">
 				<div className="flex mb-3">
-					<img
-						className="mr-4 rounded-full h-16 border border-solid border-gray-700"
-						src={user?.photoURL ?? defaultUserPicture}
-						alt={"Profile"}
+					<Icon
+						mr={4}
+						rounded={"full"}
+						h={16}
+						border={"solid"}
+						borderColor={"gray.700"}
+						as={HiOutlineUser}
 					/>
 					<div className="w-2/3 flex flex-col justify-center">
 						<div className="font-semibold text-xl">

@@ -22,12 +22,12 @@ export default function Review(props: Props) {
 		>
 			<ReviewTopbar
 				progressIndicatorText={deck ? cards.length + " cards left" : ""}
-				deckName={deck.name}
+				deckName={deck?.name}
 			/>
 
 			<div className={styles.reviewContainer}>
 				<>
-					<DeckComponent onSwipe={this.onSwipe.bind(this)} cards={cards} />
+					<DeckComponent cards={cards ?? []} />
 				</>
 			</div>
 		</div>

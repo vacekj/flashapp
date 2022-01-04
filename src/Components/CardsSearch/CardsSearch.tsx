@@ -1,32 +1,44 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../Topbar";
 import { Card, Deck, getCardsOfDeck, useDecksOfCurrentUser } from "../../Lib/Storage";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { Link } from "react-router-dom";
-import { Skeleton } from "@mui/material";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import Link from "next/link";
+import {
+	Icon,
+	IconButton,
+	Skeleton,
+	VStack,
+	Text,
+	HStack,
+	Input,
+	InputGroup,
+	InputRightAddon,
+	Box,
+} from "@chakra-ui/react";
+import { HiOutlinePlus, HiOutlineSearch } from "react-icons/hi";
 
 export default function CardsSearch() {
 	const { decks } = useDecksOfCurrentUser();
 	const [cards, setCards] = useState<Card[]>([]);
 	const [filter, setFilter] = useState("");
 
-	useEffect(() => {
-		decks &&
-			Promise.all(decks.map((deck) => getCardsOfDeck(deck.uid)))
-				.then((arrays) => arrays.flat())
-				.then((cards) => setCards(cards));
-	}, [decks]);
-
 	return (
-		<div className="bg-indigo-100">
-			<Topbar className="flex justify-between items-center bg-white">
-				Cards
-				<Link to={"/add"} className="flex items-center">
-					<AddRoundedIcon fontSize={"large"} />
-				</Link>
+		<div>
+			<Topbar>
+				<HStack p={2} px={4} justifyContent={"space-between"} alignItems={"center"}>
+					<Text fontSize={"3xl"} fontWeight={"medium"}>
+						Cards
+					</Text>
+					<Link href={"/add"}>
+						<IconButton
+							variant={"ghost"}
+							aria-label={"Add card"}
+							fontSize={"3xl"}
+							icon={<Icon as={HiOutlinePlus} />}
+						/>
+					</Link>
+				</HStack>
 			</Topbar>
-			<div className="flex flex-col justify-around">
+			<VStack spacing={3} mt={3} alignItems={"stretch"}>
 				<Search onSubmit={(value) => setFilter(value)} />
 				{cards === null &&
 					Array(3)
@@ -60,7 +72,7 @@ export default function CardsSearch() {
 								<div className="py-3">{card.back}</div>
 							</div>
 						))}
-			</div>
+			</VStack>
 		</div>
 	);
 }
@@ -72,23 +84,34 @@ interface SearchProps {
 function Search(props: SearchProps) {
 	const [value, setValue] = useState("");
 	return (
-		<form
+		<Box
+			as={"form"}
+			// @ts-ignore
 			onSubmit={(e) => {
 				e.preventDefault();
 				props.onSubmit(value);
 			}}
-			className="m-3 p-3 rounded bg-white flex justify-between items-center shadow hover:shadow-md"
+			mx={2}
 		>
-			<input
-				type="text"
-				onChange={(e) => {
-					setValue(e.target.value);
-					props.onSubmit(e.target.value);
-				}}
-				value={value}
-				className="flex-grow outline-none"
-			/>
-			<SearchRoundedIcon onClick={() => props.onSubmit(value)} className="text-gray-600" />
-		</form>
+			<InputGroup>
+				<Input
+					placeholder={"Search cards"}
+					type="text"
+					onChange={(e) => {
+						setValue(e.target.value);
+						props.onSubmit(e.target.value);
+					}}
+					value={value}
+				/>
+				<InputRightAddon p={0}>
+					<IconButton
+						mx={2}
+						aria-label={"Search"}
+						onClick={() => props.onSubmit(value)}
+						icon={<Icon fontSize={"xl"} as={HiOutlineSearch} />}
+					/>
+				</InputRightAddon>
+			</InputGroup>
+		</Box>
 	);
 }

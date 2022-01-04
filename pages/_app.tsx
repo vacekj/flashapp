@@ -1,9 +1,7 @@
 import "../src/index.css";
 
 import type { AppProps } from "next/app";
-import { FirebaseContext } from "../src/Lib/Firebase";
-import { ThemeProvider } from "@mui/styles";
-import { createTheme } from "@mui/material";
+import { FirebaseContext } from "@/src/Lib/Firebase";
 import { ChakraProvider } from "@chakra-ui/react";
 
 const firebaseConfig = {
@@ -17,16 +15,12 @@ const firebaseConfig = {
 	measurementId: "G-1CCSX7MC9F",
 };
 
-const theme = createTheme();
-
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<ChakraProvider>
-			<ThemeProvider theme={theme}>
-				<FirebaseContext.Provider value={firebaseConfig}>
-					<Component {...pageProps} />
-				</FirebaseContext.Provider>
-			</ThemeProvider>
+			<FirebaseContext.Provider value={firebaseConfig}>
+				<Component {...pageProps} />
+			</FirebaseContext.Provider>
 		</ChakraProvider>
 	);
 }

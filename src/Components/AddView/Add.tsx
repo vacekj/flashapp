@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Divider from "@mui/material/Divider";
-import Hidden from "@mui/material/Hidden";
+import {
+	Select,
+	MenuItem,
+	FormControl,
+	Modal,
+	IconButton,
+	Icon,
+	Button,
+	useToast,
+} from "@chakra-ui/react";
 
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
@@ -13,26 +17,10 @@ import AddCard from "./AddCard";
 import { Card, CardToAdd, createCard, deleteCard, useDecksOfCurrentUser } from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
-
-import NoteAddRoundedIcon from "@mui/icons-material/NoteAddRounded";
-import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import UndoRoundedIcon from "@mui/icons-material/UndoRounded";
-import { Button, Dialog, IconButton, Snackbar } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { getDoc } from "@firebase/firestore";
+import { HiOutlinePlay, HiOutlineX } from "react-icons/hi";
 
 const DeckComponent = require("../Deck").default;
-
-const useStyles = makeStyles({
-	root: { color: "black" },
-	colorDisabled: { color: "grey", background: "red" },
-	closeButton: {
-		position: "absolute",
-		right: 0,
-		zIndex: 30000,
-	},
-});
 
 interface State {
 	selectedDeckUid: string | null;
@@ -43,12 +31,13 @@ interface State {
 
 export default function Add() {
 	const { decks } = useDecksOfCurrentUser();
-
+	const toast = useToast();
 	const [previousCard, setPreviousCard] = useState<{ front: string; back: string; uid: string }>({
 		front: "",
 		back: "",
 		uid: "",
 	});
+
 	const lastAddedToDeck = decks.sort((a, b) => {
 		return (b.lastAdditionAt?.seconds || 0) - (a.lastAdditionAt?.seconds || 0);
 	})[0];
@@ -60,26 +49,18 @@ export default function Add() {
 		previewing: false,
 	});
 
-	const [snackbarShown, setSnackbarShown] = useState(false);
-
-	const classes = useStyles();
-
 	return (
 		<>
-			<Dialog
-				open={state.previewing}
+			<Modal
+				isOpen={state.previewing}
 				onClose={() => setState({ ...state, previewing: false })}
-				fullScreen
 			>
 				<IconButton
-					classes={{
-						root: classes.closeButton,
-					}}
+					icon={<Icon as={HiOutlineX} />}
+					aria-label={"close"}
 					onClick={() => setState({ ...state, previewing: false })}
-					size="large"
-				>
-					<CloseRoundedIcon fontSize={"large"} />
-				</IconButton>
+					size={"lg"}
+				/>
 				<DeckComponent
 					cards={[
 						{
@@ -91,39 +72,7 @@ export default function Add() {
 					]}
 					onSwipe={() => {}}
 				/>
-			</Dialog>
-
-			<Snackbar
-				anchorOrigin={{
-					vertical: "bottom",
-					horizontal: "center",
-				}}
-				open={snackbarShown}
-				autoHideDuration={1000}
-				message="Card added"
-				action={
-					<Button
-						size="small"
-						aria-label="close"
-						color="inherit"
-						onClick={async () => {
-							setSnackbarShown(false);
-							setState({
-								...state,
-								front: previousCard.front,
-								back: previousCard.back,
-							});
-							await deleteCard(previousCard.uid);
-						}}
-						style={{
-							color: "orange",
-						}}
-						endIcon={<UndoRoundedIcon />}
-					>
-						Undo
-					</Button>
-				}
-			/>
+			</Modal>
 
 			<div className={styles.addContainer}>
 				<Topbar
@@ -135,12 +84,12 @@ export default function Add() {
 						<span>Add cards</span>
 						<div className={styles.iconsContainer}>
 							<IconButton
+								icon={<Icon as={HiOutlinePlay} />}
 								disabled={state.front.length + state.back.length < 1}
 								onClick={() => setState({ ...state, previewing: true })}
-								size="large"
-							>
-								<PlayArrowRoundedIcon fontSize={"large"} />
-							</IconButton>
+								size="lg"
+								aria-label="Preview"
+							/>
 							<IconButton
 								disabled={
 									state.selectedDeckUid === null ||
@@ -167,17 +116,34 @@ export default function Add() {
 										front: "",
 										back: "",
 									});
-									setSnackbarShown(true);
-									setTimeout(() => setSnackbarShown(false), 3_000);
-								}}
-								classes={{
-									root: classes.root,
-									disabled: classes.colorDisabled,
+									toast({
+										render: () => {
+											return (
+												<Button
+													size="small"
+													aria-label="close"
+													color="inherit"
+													onClick={async () => {
+														setState({
+															...state,
+															front: previousCard.front,
+															back: previousCard.back,
+														});
+														await deleteCard(previousCard.uid);
+													}}
+													style={{
+														color: "orange",
+													}}
+												>
+													Undo
+												</Button>
+											);
+										},
+									});
 								}}
 								size="large"
-							>
-								<NoteAddRoundedIcon fontSize={"large"} />
-							</IconButton>
+								aria-label={"Add note"}
+							/>
 						</div>
 					</div>
 				</Topbar>
@@ -185,9 +151,7 @@ export default function Add() {
 				<div className={styles.addView}>
 					<div className={styles.deckSelectContainer}>
 						<FormControl className={styles.deckSelect}>
-							<InputLabel shrink id="demo-simple-select-label">
-								Deck
-							</InputLabel>
+							Deck
 							<Select
 								labelId="demo-simple-select-label"
 								id="demo-simple-select"
@@ -239,15 +203,6 @@ export default function Add() {
 							}}
 							value={state.front}
 						/>
-
-						<Hidden smUp={true}>
-							<Divider
-								variant={"middle"}
-								style={{
-									width: "30%",
-								}}
-							/>
-						</Hidden>
 
 						<AddCard
 							placeholder={"Answer"}

@@ -1,14 +1,16 @@
 import styles from "../../src/App.module.css";
-import Review from "../../src/Components/Review";
 import Bottombar from "../../src/Components/Bottombar";
 import React from "react";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+const DynamicReview = dynamic(() => import("@/src/Components/Review"), { ssr: false });
 
 export default function DeckPage() {
 	const router = useRouter();
 	return (
 		<div className={styles.main}>
-			<Review deckUid={router.query.uid as string} />
+			<DynamicReview deckUid={router.query.uid as string} />
 			<Bottombar />
 		</div>
 	);

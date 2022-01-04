@@ -6,6 +6,7 @@ import {
 	where,
 	doc,
 	getDocs,
+	CollectionReference,
 } from "@firebase/firestore";
 import { DocumentReference, query } from "@firebase/firestore";
 import { useFirebaseApp } from "./Firebase";
@@ -51,6 +52,9 @@ export async function deleteDeck(deckUid: string) {
 }
 
 export function useDeckByUid(deckUid: string) {
+	if (typeof window === undefined) {
+		return;
+	}
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, DECKS_COLLECTION);
 	// @ts-ignore
@@ -73,25 +77,29 @@ export async function getDecksOfUser(userUid: string) {
 }
 
 export function useDecksOfCurrentUser() {
+	if (typeof window === undefined) {
+		return;
+	}
 	const app = useFirebaseApp();
 	const { user } = useUser();
-	const collectionRef = collection(getFirestore(app), DECKS_COLLECTION);
-	const q = query(collectionRef, where("ownerUid", "==", user?.uid ?? ""));
+	const collectionRef = collection(
+		getFirestore(app),
+		DECKS_COLLECTION
+	) as CollectionReference<Deck>;
+	const q = query<Deck>(collectionRef, where("ownerUid", "==", user?.uid ?? ""));
 
-	const [decks, loading, error] = useCollectionData(q);
-	const mappedDecks = decks
-		?.map((snapshot) => {
-			return {
-				...snapshot.data(),
-				uid: snapshot.id,
-			} as Deck;
-		})
-		.filter((data) => data.deleted !== true) as Deck[];
+	const [decks, loading, error] = useCollectionData<Deck>(q, {
+		idField: "uid",
+	});
+	const mappedDecks = decks?.filter((data) => data.deleted !== true) as Deck[];
 
 	return { decks: mappedDecks ?? [], loading, error };
 }
 
 export function useCardsOfDeck(deckUid: string) {
+	if (typeof window === undefined) {
+		return;
+	}
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, CARDS_COLLECTION);
 	const q = query(collectionRef, where("deckUid", "==", deckUid), where("deleted", "!=", true));
@@ -117,6 +125,19 @@ export async function createCard(card: CardToAdd) {
 }
 
 export async function updateCard(card: CardToEdit) {
+	const doc:
+		| Omit<Card, "uid" | "deckUid">
+		| {
+				front?: string;
+				back?: string;
+		  } = {
+		...card,
+		updatedAt: getTimeStamp(new Date()),
+	};
+	return await this.db.collection(CARDS_COLLECTION).doc(card.uid).update(doc);
+}
+
+export async function updateDeck(card: CardToEdit) {
 	const doc:
 		| Omit<Card, "uid" | "deckUid">
 		| {
