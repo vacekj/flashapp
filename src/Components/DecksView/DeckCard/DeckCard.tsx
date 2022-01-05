@@ -22,7 +22,7 @@ export default function DeckCard(props: Props) {
 					setDetailOpen(false);
 				}}
 			/>
-			<HStack p={5} justifyContent={"space-between"} bg={"gray.100"} mx={3} rounded={"lg"}>
+			<HStack p={5} justifyContent={"space-between"} bg={"white"} mx={3} rounded={"lg"}>
 				<Box onClick={() => setDetailOpen(true)} flexGrow={2}>
 					<Text fontSize={"lg"} fontWeight={"bold"}>
 						{props.deck.name}

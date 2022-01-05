@@ -3,6 +3,7 @@ import styles from "./Bottombar.module.css";
 import BottombarTab from "./BottombarTab";
 import { useRouter } from "next/router";
 import { HiOutlineHome, HiOutlineSearch, HiOutlineUser } from "react-icons/hi";
+import { HStack } from "@chakra-ui/react";
 interface Tab {
 	link: string;
 	name: string;
@@ -30,9 +31,18 @@ const tabs: Tab[] = [
 
 function Bottombar() {
 	const router = useRouter();
-
 	return (
-		<div className={styles.bottomBar}>
+		<HStack
+			zIndex={100}
+			bg={"white"}
+			boxShadow={"0 -2px 3px 0 rgba(0, 0, 0, 0.1)"}
+			py={5}
+			position={"absolute"}
+			bottom={0}
+			w={"full"}
+			justifyContent={"space-around"}
+			alignItems={"center"}
+		>
 			{tabs.map((tab, i) => {
 				return (
 					<BottombarTab
@@ -44,7 +54,7 @@ function Bottombar() {
 					/>
 				);
 			})}
-		</div>
+		</HStack>
 	);
 }
 

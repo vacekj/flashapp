@@ -35,7 +35,7 @@ const AddDeckDialog = (props: Props) => {
 	const [deckDescription, setDeckDescription] = useState("");
 
 	return (
-		<Modal isOpen={props.open} onClose={props.onClose}>
+		<Modal isOpen={props.open} onClose={props.onClose} isCentered>
 			<ModalOverlay />
 			<ModalContent m={10}>
 				<ModalHeader>Create a new Deck</ModalHeader>

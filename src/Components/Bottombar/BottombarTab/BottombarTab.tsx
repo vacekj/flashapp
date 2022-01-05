@@ -20,7 +20,7 @@ function BottombarTab(props: Props) {
 						color: "gray.600",
 					}}
 					as={props.icon}
-					fontSize={"4xl"}
+					fontSize={"3xl"}
 				/>
 			</Box>
 		</NextLink>

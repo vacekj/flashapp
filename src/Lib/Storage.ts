@@ -7,11 +7,15 @@ import {
 	doc,
 	getDocs,
 	CollectionReference,
+	Firestore,
+	addDoc,
+	updateDoc,
 } from "@firebase/firestore";
 import { DocumentReference, query } from "@firebase/firestore";
 import { useFirebaseApp } from "./Firebase";
 import { useUser } from "./Auth";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+import { useEffect, useMemo, useState } from "react";
 
 export const DECKS_COLLECTION = "decks";
 export const CARDS_COLLECTION = "cards";
@@ -25,30 +29,11 @@ export function useFirestore() {
 	return getFirestore(app);
 }
 
-export async function getCardsOfDeck(deckUid: string) {
-	const firestore = useFirestore();
-	const collectionRef = collection(firestore, CARDS_COLLECTION);
-	const q = query(collectionRef, where("deckUid", "==", deckUid), where("deleted", "!=", true));
+export async function getCardsOfDeck(db: Firestore, deckUid: string) {
+	const collectionRef = collection(db, CARDS_COLLECTION);
+	const q = query(collectionRef, where("deckUid", "==", deckUid));
 	const cardsSnapshost = await getDocs(q);
 	return cardsSnapshost.docs.map((snapshot) => snapshot.data()) as Card[];
-}
-
-export async function createDeck(deck: DeckToSave) {
-	const doc: Omit<Deck, "uid"> = {
-		...deck,
-		createdAt: getTimeStamp(new Date()),
-		updatedAt: getTimeStamp(new Date()),
-		ownerUid: this.firebase.auth().currentUser?.uid as string,
-	};
-	return (await this.db
-		.collection(DECKS_COLLECTION)
-		.add(doc)) as unknown as DocumentReference<Deck>;
-}
-
-export async function deleteDeck(deckUid: string) {
-	return await this.db.collection(DECKS_COLLECTION).doc(deckUid).update({
-		deleted: true,
-	});
 }
 
 export function useDeckByUid(deckUid: string) {
@@ -67,39 +52,49 @@ export function useDeckByUid(deckUid: string) {
 	};
 }
 
-export async function getDecksOfUser(userUid: string) {
-	const res = await this.db.collection(DECKS_COLLECTION).where("ownerUid", "==", userUid).get();
-	return res.docs
-		.map((snapshot) => {
-			return snapshot.data(); /*TODO: does this return uid as well?*/
-		})
-		.filter((data) => data.deleted !== true) as Deck[];
-}
-
 export function useDecksOfCurrentUser() {
-	if (typeof window === undefined) {
-		return;
-	}
+	console.log("useDecksOfCurrentUser called");
 	const app = useFirebaseApp();
 	const { user } = useUser();
-	const collectionRef = collection(
-		getFirestore(app),
-		DECKS_COLLECTION
-	) as CollectionReference<Deck>;
-	const q = query<Deck>(collectionRef, where("ownerUid", "==", user?.uid ?? ""));
+
+	const q = useMemo(() => {
+		const collectionRef = collection(
+			getFirestore(app),
+			DECKS_COLLECTION
+		) as CollectionReference<Deck>;
+		return query<Deck>(collectionRef, where("ownerUid", "==", user?.uid ?? ""));
+	}, [app, user]);
 
 	const [decks, loading, error] = useCollectionData<Deck>(q, {
 		idField: "uid",
 	});
+
 	const mappedDecks = decks?.filter((data) => data.deleted !== true) as Deck[];
 
 	return { decks: mappedDecks ?? [], loading, error };
 }
 
+export function useAllCardsOfUser() {
+	console.log("allcards called");
+	const { decks } = useDecksOfCurrentUser();
+	const firestore = useFirestore();
+	const [cards, setCards] = useState<Card[] | undefined>(undefined);
+	useEffect(() => {
+		if (!decks.length) {
+			return;
+		}
+		const promises = decks.map((deck) => getCardsOfDeck(firestore, deck.uid));
+		Promise.all(promises)
+			.then((cardsOfDecks) => {
+				setCards(cardsOfDecks.flat());
+			})
+			.catch((e) => console.error(e));
+	}, [decks]);
+
+	return { cards };
+}
+
 export function useCardsOfDeck(deckUid: string) {
-	if (typeof window === undefined) {
-		return;
-	}
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, CARDS_COLLECTION);
 	const q = query(collectionRef, where("deckUid", "==", deckUid), where("deleted", "!=", true));
@@ -107,53 +102,20 @@ export function useCardsOfDeck(deckUid: string) {
 	return { cards, loading, error };
 }
 
-export async function createCard(card: CardToAdd) {
-	const doc: Omit<Card, "uid"> = {
+export async function createCard(db: Firestore, card: CardToAdd) {
+	const cardToAdd: Omit<Card, "uid"> = {
 		...card,
 		createdAt: getTimeStamp(new Date()),
 		updatedAt: getTimeStamp(new Date()),
 	};
-	await this.db
-		.collection(DECKS_COLLECTION)
-		.doc(card.deckUid)
-		.update({
-			lastAdditionAt: getTimeStamp(new Date()),
-		} as Partial<Deck>);
-	return (await this.db
-		.collection(CARDS_COLLECTION)
-		.add(doc)) as unknown as DocumentReference<Card>;
-}
 
-export async function updateCard(card: CardToEdit) {
-	const doc:
-		| Omit<Card, "uid" | "deckUid">
-		| {
-				front?: string;
-				back?: string;
-		  } = {
-		...card,
-		updatedAt: getTimeStamp(new Date()),
-	};
-	return await this.db.collection(CARDS_COLLECTION).doc(card.uid).update(doc);
-}
-
-export async function updateDeck(card: CardToEdit) {
-	const doc:
-		| Omit<Card, "uid" | "deckUid">
-		| {
-				front?: string;
-				back?: string;
-		  } = {
-		...card,
-		updatedAt: getTimeStamp(new Date()),
-	};
-	return await this.db.collection(CARDS_COLLECTION).doc(card.uid).update(doc);
-}
-
-export async function deleteCard(cardUid: string) {
-	return await this.db.collection(CARDS_COLLECTION).doc(cardUid).update({
-		deleted: true,
+	/*Update last-added-to for Deck*/
+	await updateDoc(doc(collection(db, DECKS_COLLECTION), card.deckUid), {
+		lastAdditionAt: getTimeStamp(new Date()),
 	});
+
+	/*Insert card into Cards collection*/
+	return await addDoc(collection(db, CARDS_COLLECTION), cardToAdd);
 }
 
 export type CardToEdit = {

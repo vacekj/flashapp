@@ -1,56 +1,36 @@
 .addView {
-    font-size: 18px;
-    overflow: scroll;
-    background: #F0F3FA;
+	font-size: 18px;
+	overflow: scroll;
 }
 
 .addContainer {
-    height: 92vh;
-    display: flex;
-    flex-direction: column;
+	height: 92vh;
+	display: flex;
+	flex-direction: column;
 }
 
 .deckSelectContainer {
-    margin: 20px;
-    display: flex;
-    justify-content: center;
+	margin: 20px;
+	display: flex;
+	justify-content: center;
 }
 
 .deckSelect {
-    width: 500px;
+	width: 500px;
 }
 
 .deckLabel {
-    font-size: 18px;
+	font-size: 18px;
 }
 
 .deckSelectText {
-    font-size: 1.3rem;
-    font-family: "Rubik", sans-serif !important;
+	font-size: 1.3rem;
+	font-family: "Rubik", sans-serif !important;
 }
 
 .addCardContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
 }
-
-.topbarFlex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-.topbarFlex img {
-    height: 30px;
-    margin: 0;
-}
-
-.iconsContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-

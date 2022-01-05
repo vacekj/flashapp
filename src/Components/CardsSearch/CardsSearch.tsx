@@ -1,33 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Topbar from "../Topbar";
-import { Card, Deck, getCardsOfDeck, useDecksOfCurrentUser } from "../../Lib/Storage";
+import { useAllCardsOfUser } from "../../Lib/Storage";
 import Link from "next/link";
 import {
 	Icon,
 	IconButton,
 	Skeleton,
 	VStack,
-	Text,
-	HStack,
 	Input,
 	InputGroup,
 	InputRightAddon,
 	Box,
 } from "@chakra-ui/react";
 import { HiOutlinePlus, HiOutlineSearch } from "react-icons/hi";
+import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
+import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
 
 export default function CardsSearch() {
-	const { decks } = useDecksOfCurrentUser();
-	const [cards, setCards] = useState<Card[]>([]);
+	const { cards } = useAllCardsOfUser();
 	const [filter, setFilter] = useState("");
-
 	return (
 		<div>
 			<Topbar>
-				<HStack p={2} px={4} justifyContent={"space-between"} alignItems={"center"}>
-					<Text fontSize={"3xl"} fontWeight={"medium"}>
-						Cards
-					</Text>
+				<TopbarContainer>
+					<TopbarTitle>Cards</TopbarTitle>
 					<Link href={"/add"}>
 						<IconButton
 							variant={"ghost"}
@@ -36,9 +32,9 @@ export default function CardsSearch() {
 							icon={<Icon as={HiOutlinePlus} />}
 						/>
 					</Link>
-				</HStack>
+				</TopbarContainer>
 			</Topbar>
-			<VStack spacing={3} mt={3} alignItems={"stretch"}>
+			<VStack spacing={3} mt={3} p={3} alignItems={"stretch"} bg={"gray.50"}>
 				<Search onSubmit={(value) => setFilter(value)} />
 				{cards === null &&
 					Array(3)
@@ -91,7 +87,7 @@ function Search(props: SearchProps) {
 				e.preventDefault();
 				props.onSubmit(value);
 			}}
-			mx={2}
+			bg={"white"}
 		>
 			<InputGroup>
 				<Input

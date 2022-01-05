@@ -1,15 +1,21 @@
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useFirebaseApp } from "./Firebase";
-import { getAuth } from "@firebase/auth";
+import { getAuth, signOut } from "@firebase/auth";
+import { useEffect, useState } from "react";
 
 export function useUser() {
-	const app = useFirebaseApp();
-	const auth = getAuth(app);
+	let doesntChange = "sdf";
+	const auth = useAuth();
 	const [user, loading, error] = useAuthState(auth);
-	return { user, loading, error, signOut: auth.signOut };
+	return { user, loading, error };
 }
 
 export function useAuth() {
 	const app = useFirebaseApp();
-	return getAuth(app);
+	const [auth, setAuth] = useState(() => getAuth(app));
+	useEffect(() => {
+		setAuth(getAuth(app));
+	}, [app]);
+
+	return auth;
 }

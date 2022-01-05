@@ -7,9 +7,22 @@ import Topbar from "../Topbar";
 import { HiOutlinePlus, HiPlus } from "react-icons/hi";
 import AddDeckDialog from "../AddDeckDialog";
 import { addDoc, collection, deleteDoc, doc, setDoc, Timestamp } from "@firebase/firestore";
-import { Box, Button, ChakraProps, Icon, VStack } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	ChakraProps,
+	Heading,
+	HStack,
+	Icon,
+	IconButton,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import { Skeleton } from "@chakra-ui/react";
 import { useAuth } from "@/src/Lib/Auth";
+import Link from "next/link";
+import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
+import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
 
 function AddDeckCard(props: React.ComponentProps<"button">) {
 	return (
@@ -28,24 +41,18 @@ function AddDeckCard(props: React.ComponentProps<"button">) {
 function renderDecks(decks: Deck[]) {
 	const db = useFirestore();
 
-	return decks.length > 0 ? (
-		decks.map((deck, i) => {
-			return (
-				<Box w="full" key={i}>
-					<DeckCard
-						deck={deck}
-						onDeckDelete={async (deckUid: string) => {
-							await deleteDoc(doc(db, DECKS_COLLECTION, deckUid));
-						}}
-					/>
-				</Box>
-			);
-		})
-	) : (
-		<div className={styles.noDecks}>
-			I see no decks. Why not add one using the button below?
-		</div>
-	);
+	return decks.map((deck, i) => {
+		return (
+			<Box w="full" key={i}>
+				<DeckCard
+					deck={deck}
+					onDeckDelete={async (deckUid: string) => {
+						await deleteDoc(doc(db, DECKS_COLLECTION, deckUid));
+					}}
+				/>
+			</Box>
+		);
+	});
 }
 
 export function DecksView() {
@@ -60,7 +67,7 @@ export function DecksView() {
 				onSave={async (deck) => {
 					await addDoc(collection(db, DECKS_COLLECTION), {
 						...deck,
-						ownerUid: auth.currentUser.uid,
+						ownerUid: auth.currentUser?.uid,
 						createdAt: Timestamp.now(),
 						updatedAt: Timestamp.now(),
 					});
@@ -69,19 +76,16 @@ export function DecksView() {
 				onClose={() => setDialogOpen(false)}
 			/>
 			<div className="flex flex-col">
-				<Topbar>Decks</Topbar>
-				<div className="overflow-x-hidden h-full bg-indigo-100">
-					{decks !== null ? (
-						<VStack mt={3} spacing={3}>
-							{renderDecks(decks)}
-							<AddDeckCard onClick={() => setDialogOpen(true)} />
-						</VStack>
-					) : (
-						<div className={styles.skeletonCard}>
-							<Skeleton variant="text" height={30} width={120} />
-							<Skeleton variant="text" width={300} />
-						</div>
-					)}
+				<Topbar>
+					<TopbarContainer>
+						<TopbarTitle>Decks</TopbarTitle>
+					</TopbarContainer>
+				</Topbar>
+				<div className="overflow-x-hidden h-full bg-gray-100">
+					<VStack mt={3} spacing={3}>
+						{renderDecks(decks)}
+						<AddDeckCard onClick={() => setDialogOpen(true)} />
+					</VStack>
 				</div>
 			</div>
 		</>

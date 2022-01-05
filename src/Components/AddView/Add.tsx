@@ -9,16 +9,30 @@ import {
 	Icon,
 	Button,
 	useToast,
+	HStack,
+	VStack,
+	FormLabel,
+	Box,
+	ModalCloseButton,
+	ModalContent,
 } from "@chakra-ui/react";
 
 import Topbar from "../Topbar";
 import AddCard from "./AddCard";
 
-import { Card, CardToAdd, createCard, deleteCard, useDecksOfCurrentUser } from "../../Lib/Storage";
+import {
+	Card,
+	CardToAdd,
+	createCard,
+	useDecksOfCurrentUser,
+	useFirestore,
+} from "../../Lib/Storage";
 
 import styles from "./Add.module.css";
 import { getDoc } from "@firebase/firestore";
 import { HiOutlinePlay, HiOutlineX } from "react-icons/hi";
+import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
+import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
 
 const DeckComponent = require("../Deck").default;
 
@@ -40,49 +54,46 @@ export default function Add() {
 
 	const lastAddedToDeck = decks.sort((a, b) => {
 		return (b.lastAdditionAt?.seconds || 0) - (a.lastAdditionAt?.seconds || 0);
-	})[0];
+	});
 
 	const [state, setState] = useState<State>({
-		selectedDeckUid: lastAddedToDeck.uid,
+		selectedDeckUid: lastAddedToDeck[0]?.uid,
 		front: "",
 		back: "",
 		previewing: false,
 	});
 
+	const db = useFirestore();
+
 	return (
 		<>
 			<Modal
 				isOpen={state.previewing}
+				size={"full"}
+				isCentered
 				onClose={() => setState({ ...state, previewing: false })}
 			>
-				<IconButton
-					icon={<Icon as={HiOutlineX} />}
-					aria-label={"close"}
-					onClick={() => setState({ ...state, previewing: false })}
-					size={"lg"}
-				/>
-				<DeckComponent
-					cards={[
-						{
-							front: state.front,
-							back: state.back,
-							id: -1,
-							deckId: -1,
-						},
-					]}
-					onSwipe={() => {}}
-				/>
+				<ModalContent>
+					<ModalCloseButton zIndex={10000} />
+					<DeckComponent
+						cards={[
+							{
+								front: state.front,
+								back: state.back,
+								id: -1,
+								deckId: -1,
+							},
+						]}
+						onSwipe={() => {}}
+					/>
+				</ModalContent>
 			</Modal>
 
-			<div className={styles.addContainer}>
-				<Topbar
-					style={{
-						padding: "0 0 0 12px",
-					}}
-				>
-					<div className={styles.topbarFlex}>
-						<span>Add cards</span>
-						<div className={styles.iconsContainer}>
+			<VStack alignItems={"stretch"}>
+				<Topbar>
+					<TopbarContainer>
+						<TopbarTitle>Add cards</TopbarTitle>
+						<HStack spacing={3}>
 							<IconButton
 								icon={<Icon as={HiOutlinePlay} />}
 								disabled={state.front.length + state.back.length < 1}
@@ -90,7 +101,7 @@ export default function Add() {
 								size="lg"
 								aria-label="Preview"
 							/>
-							<IconButton
+							<Button
 								disabled={
 									state.selectedDeckUid === null ||
 									state.front.length < 1 ||
@@ -105,7 +116,7 @@ export default function Add() {
 										back: state.back,
 										deckUid: state.selectedDeckUid,
 									};
-									const addedCardRef = await createCard(card);
+									const addedCardRef = await createCard(db, card);
 									const addedCard = await getDoc(addedCardRef);
 									setPreviousCard({
 										...addedCard.data(),
@@ -129,7 +140,7 @@ export default function Add() {
 															front: previousCard.front,
 															back: previousCard.back,
 														});
-														await deleteCard(previousCard.uid);
+														// await deleteCard(previousCard.uid);
 													}}
 													style={{
 														color: "orange",
@@ -141,24 +152,22 @@ export default function Add() {
 										},
 									});
 								}}
-								size="large"
-								aria-label={"Add note"}
-							/>
-						</div>
-					</div>
+								size="lg"
+							>
+								Add
+							</Button>
+						</HStack>
+					</TopbarContainer>
 				</Topbar>
 
-				<div className={styles.addView}>
+				<Box bg={"gray.50"} className={styles.addView}>
 					<div className={styles.deckSelectContainer}>
 						<FormControl className={styles.deckSelect}>
-							Deck
+							<FormLabel htmlFor={"deck"}>Deck</FormLabel>
 							<Select
-								labelId="demo-simple-select-label"
-								id="demo-simple-select"
-								className={styles.deckSelectText}
+								id="deck"
 								displayEmpty={true}
-								autoWidth={true}
-								value={state.selectedDeckUid}
+								value={state.selectedDeckUid ?? ""}
 								variant={"filled"}
 								onChange={(e) => {
 									setState({
@@ -167,9 +176,9 @@ export default function Add() {
 									});
 								}}
 							>
-								<MenuItem value="" disabled>
+								<option value="" disabled>
 									Select a deck
-								</MenuItem>
+								</option>
 								{decks
 									.sort((a, b) => {
 										return (
@@ -179,13 +188,13 @@ export default function Add() {
 									})
 									.map((deck, i) => {
 										return (
-											<MenuItem
+											<option
 												value={deck.uid}
 												key={deck.uid}
 												selected={i === 0}
 											>
 												{deck.name}
-											</MenuItem>
+											</option>
 										);
 									})}
 							</Select>
@@ -215,8 +224,8 @@ export default function Add() {
 							value={state.back}
 						/>
 					</div>
-				</div>
-			</div>
+				</Box>
+			</VStack>
 		</>
 	);
 }

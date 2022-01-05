@@ -1,4 +1,5 @@
 import "../src/index.css";
+import "../src/tailwind.css";
 
 import type { AppProps } from "next/app";
 import { FirebaseContext } from "@/src/Lib/Firebase";
