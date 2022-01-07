@@ -4,10 +4,9 @@ import { getAuth, signOut } from "@firebase/auth";
 import { useEffect, useState } from "react";
 
 export function useUser() {
-	let doesntChange = "sdf";
 	const auth = useAuth();
 	const [user, loading, error] = useAuthState(auth);
-	return { user, loading, error };
+	return { user, loading, error, signOut: signOut.bind(null, auth) };
 }
 
 export function useAuth() {

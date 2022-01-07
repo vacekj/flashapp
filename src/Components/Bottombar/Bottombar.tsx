@@ -35,11 +35,14 @@ function Bottombar() {
 		<HStack
 			zIndex={100}
 			bg={"white"}
-			boxShadow={"0 -2px 3px 0 rgba(0, 0, 0, 0.1)"}
+			shadow={"lg"}
 			py={5}
 			position={"absolute"}
+			m={6}
+			rounded={"full"}
 			bottom={0}
-			w={"full"}
+			left={0}
+			right={0}
 			justifyContent={"space-around"}
 			alignItems={"center"}
 		>

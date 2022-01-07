@@ -34,7 +34,7 @@ export default function CardsSearch() {
 					</Link>
 				</TopbarContainer>
 			</Topbar>
-			<VStack spacing={3} mt={3} p={3} alignItems={"stretch"} bg={"gray.50"}>
+			<VStack spacing={3} mt={3} p={3} alignItems={"stretch"} bg={"gray.100"}>
 				<Search onSubmit={(value) => setFilter(value)} />
 				{cards === null &&
 					Array(3)
@@ -99,14 +99,6 @@ function Search(props: SearchProps) {
 					}}
 					value={value}
 				/>
-				<InputRightAddon p={0}>
-					<IconButton
-						mx={2}
-						aria-label={"Search"}
-						onClick={() => props.onSubmit(value)}
-						icon={<Icon fontSize={"xl"} as={HiOutlineSearch} />}
-					/>
-				</InputRightAddon>
 			</InputGroup>
 		</Box>
 	);

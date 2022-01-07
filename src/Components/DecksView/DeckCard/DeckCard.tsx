@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Deck } from "@/src/Lib/Storage";
+import { Deck, getCardsStatus, useCardsOfDeck, useReviewsOfDeck } from "@/src/Lib/Storage";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 import DeckDetail from "../DeckDetail";
 import Link from "next/link";
@@ -12,6 +12,13 @@ interface Props {
 
 export default function DeckCard(props: Props) {
 	const [detailOpen, setDetailOpen] = useState(false);
+	const { cards, error, loading } = useCardsOfDeck(props.deck.uid);
+	const { revisions } = useReviewsOfDeck(props.deck.uid);
+
+	const cardsWithStatus = getCardsStatus(cards ?? [], revisions ?? []);
+	const reviewedCards = cardsWithStatus.filter((card) => card.hasBeenReviewed);
+	const unseenCards = cardsWithStatus.filter((card) => !card.hasBeenReviewed);
+
 	return (
 		<>
 			<DeckDetail
@@ -29,8 +36,13 @@ export default function DeckCard(props: Props) {
 					</Text>
 				</Box>
 				<Box className="items-end">
-					<Link href={"/decks/" + props.deck.uid}>
-						<Button variant={"solid"} color={""} as={"a"}>
+					<Link href={cards?.length ? "/decks/" + props.deck.uid : "#"}>
+						<Button
+							disabled={cards?.length === 0}
+							variant={"solid"}
+							color={""}
+							as={"a"}
+						>
 							Review
 						</Button>
 					</Link>

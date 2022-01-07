@@ -10,15 +10,18 @@ import {
 	Firestore,
 	addDoc,
 	updateDoc,
+	FirestoreError,
 } from "@firebase/firestore";
 import { DocumentReference, query } from "@firebase/firestore";
 import { useFirebaseApp } from "./Firebase";
 import { useUser } from "./Auth";
 import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
 import { useEffect, useMemo, useState } from "react";
+import Review from "@/src/Components/Review";
 
 export const DECKS_COLLECTION = "decks";
 export const CARDS_COLLECTION = "cards";
+export const REVIEWS_COLLECTION = "reviews";
 
 function getTimeStamp(date: Date) {
 	return Timestamp.fromDate(date);
@@ -37,9 +40,6 @@ export async function getCardsOfDeck(db: Firestore, deckUid: string) {
 }
 
 export function useDeckByUid(deckUid: string) {
-	if (typeof window === undefined) {
-		return;
-	}
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, DECKS_COLLECTION);
 	// @ts-ignore
@@ -75,7 +75,6 @@ export function useDecksOfCurrentUser() {
 }
 
 export function useAllCardsOfUser() {
-	console.log("allcards called");
 	const { decks } = useDecksOfCurrentUser();
 	const firestore = useFirestore();
 	const [cards, setCards] = useState<Card[] | undefined>(undefined);
@@ -94,12 +93,44 @@ export function useAllCardsOfUser() {
 	return { cards };
 }
 
+export async function getRevisionsOfCard(db: Firestore, cardUid: string) {
+	const collectionRef = collection(db, REVIEWS_COLLECTION);
+	const q = query(collectionRef, where("cardUid", "==", cardUid));
+	const reviewsSnapshot = await getDocs(q);
+	return reviewsSnapshot.docs.map((snapshot) => snapshot.data()) as Revision[];
+}
+
+export function useReviewsOfDeck(deckUid: string) {
+	const firestore = useFirestore();
+	const { cards, loading, error } = useCardsOfDeck(deckUid);
+	const [revisions, setRevisions] = useState<Revision[]>();
+	useEffect(() => {
+		if (!cards?.length) {
+			return;
+		}
+		const promises = cards.map((card) => getRevisionsOfCard(firestore, card.uid));
+		Promise.all(promises)
+			.then((cardsOfDecks) => {
+				setRevisions(cardsOfDecks.flat());
+			})
+			.catch((e) => console.error(e));
+	}, [cards]);
+
+	return { revisions, loading, error };
+}
+
 export function useCardsOfDeck(deckUid: string) {
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, CARDS_COLLECTION);
 	const q = query(collectionRef, where("deckUid", "==", deckUid), where("deleted", "!=", true));
-	const [cards, loading, error] = useCollectionData(q);
-	return { cards, loading, error };
+	// @ts-expect-error
+	const [cards, loading, error] = useCollectionData<Card[]>(q);
+	// @ts-expect-error
+	return { cards, loading, error } as {
+		cards: Card[];
+		loading: boolean;
+		error: FirestoreError | undefined;
+	};
 }
 
 export async function createCard(db: Firestore, card: CardToAdd) {
@@ -116,6 +147,13 @@ export async function createCard(db: Firestore, card: CardToAdd) {
 
 	/*Insert card into Cards collection*/
 	return await addDoc(collection(db, CARDS_COLLECTION), cardToAdd);
+}
+
+export function getCardsStatus(cards: Card[], revisions: Revision[]) {
+	return cards.map((card) => {
+		const hasBeenReviewed = revisions.find((revision) => revision.cardUid === card.uid);
+		return { ...card, hasBeenReviewed };
+	});
 }
 
 export type CardToEdit = {
@@ -163,6 +201,8 @@ export interface Deck extends DeckToSave {
 export interface Revision {
 	uid: string;
 	cardUid: string;
+	/*True = remember, False = don't remember*/
 	result: boolean;
+	/*Time in miliseconds from seeing the card to answer*/
 	time: number;
 }

@@ -3,7 +3,7 @@ import "../src/tailwind.css";
 
 import type { AppProps } from "next/app";
 import { FirebaseContext } from "@/src/Lib/Firebase";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyCdhcK-DNwIam9Tq-iUJoekbSgPfECbUX8",
@@ -16,9 +16,29 @@ const firebaseConfig = {
 	measurementId: "G-1CCSX7MC9F",
 };
 
+const theme = extendTheme({
+	colors: {
+		gray: {
+			50: "#f9fafb",
+			100: "#f3f4f6",
+			200: "#e5e7eb",
+			300: "#d1d5db",
+			400: "#9ca3af",
+			500: "#6b7280",
+			600: "#4b5563",
+			700: "#374151",
+			800: "#1f2937",
+			900: "#111827",
+		},
+		background: {
+			"100": "#F9F9F9",
+		},
+	},
+});
+
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
-		<ChakraProvider>
+		<ChakraProvider theme={theme}>
 			<FirebaseContext.Provider value={firebaseConfig}>
 				<Component {...pageProps} />
 			</FirebaseContext.Provider>

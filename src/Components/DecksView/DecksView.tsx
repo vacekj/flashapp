@@ -81,12 +81,13 @@ export function DecksView() {
 						<TopbarTitle>Decks</TopbarTitle>
 					</TopbarContainer>
 				</Topbar>
-				<div className="overflow-x-hidden h-full bg-gray-100">
+
+				<Box bg={"background.100"} className="overflow-x-hidden h-full">
 					<VStack mt={3} spacing={3}>
 						{renderDecks(decks)}
 						<AddDeckCard onClick={() => setDialogOpen(true)} />
 					</VStack>
-				</div>
+				</Box>
 			</div>
 		</>
 	);

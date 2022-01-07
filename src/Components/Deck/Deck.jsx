@@ -6,14 +6,14 @@ import ReviewCard from "./ReviewCard";
 import styles from "./styles.module.css";
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
-const to = i => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20 });
-const from = i => ({ x: 0, y: -1000, scale: 1.05, rot: 0 });
+const to = (i) => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20 });
+const from = (i) => ({ x: 0, y: -1000, scale: 1.05, rot: 0 });
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) => `scale(${s})`;
 
 export default function DeckWrapper(props) {
 	if (props.cards.length === 0) {
-		return <div className={styles.cardContainer}>No cards to review at the moment</div>;
+		return <div className={styles.cardContainer}>No cards to review at the moment.</div>;
 	} else {
 		return <Deck {...props} />;
 	}
@@ -21,9 +21,9 @@ export default function DeckWrapper(props) {
 
 function Deck(props) {
 	const [gone] = useState(() => new Set()); // The set flags all the cards that are flicked out
-	const [properties, set] = useSprings(props.cards.length, i => ({
+	const [properties, set] = useSprings(props.cards.length, (i) => ({
 		...to(i),
-		from: from(i)
+		from: from(i),
 	})); // Create a bunch of springs using the helpers above
 	// Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
 	const bind = useGesture(
@@ -37,7 +37,7 @@ function Deck(props) {
 				props.onSwipe({ index, direction: dir, cardId: props.cards[index].id });
 			}
 
-			set(i => {
+			set((i) => {
 				if (index !== i) return; // We're only interested in changing spring-data for the current spring
 				const isGone = gone.has(index);
 				const x = isGone ? (200 + window.innerWidth) * dir : down ? xDelta : 0; // When a card is gone it flys out left or right, otherwise goes back to zero
@@ -50,14 +50,14 @@ function Deck(props) {
 					delay: undefined,
 					config: {
 						friction: 30,
-						tension: down ? 800 : isGone ? 200 : 500
-					}
+						tension: down ? 800 : isGone ? 200 : 500,
+					},
 				};
 			});
 
 			/* TODO: on finish review here*/
 			if (!down && gone.size === props.cards.length)
-				setTimeout(() => gone.clear() || set(i => to(i)), 600);
+				setTimeout(() => gone.clear() || set((i) => to(i)), 600);
 		}
 	);
 
@@ -68,7 +68,7 @@ function Deck(props) {
 				className={styles.cardContainer}
 				key={i}
 				style={{
-					transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${0}px,0)`)
+					transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${0}px,0)`),
 				}}
 			>
 				{/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
@@ -77,7 +77,7 @@ function Deck(props) {
 					{...bind(i)}
 					style={{
 						transform: interpolate([rot, scale], trans),
-						background: getBackground(x)
+						background: getBackground(x),
 					}}
 				>
 					<ReviewCard front={props.cards[i].front} back={props.cards[i].back} />
@@ -122,23 +122,22 @@ const hsv2rgb = function (h, s, v) {
 		"#" +
 		rgb
 			.map(function (x) {
-				return ("0" + Math.round(x * 255)
-					.toString(16)).slice(-2);
+				return ("0" + Math.round(x * 255).toString(16)).slice(-2);
 			})
 			.join("")
 	);
 };
 
-const getBackground = x => {
-	return interpolate([x], x => {
-		x = (x / 15) + 50;
+const getBackground = (x) => {
+	return interpolate([x], (x) => {
+		x = x / 15 + 50;
 		if (x > 100) {
 			x = 100;
 		}
 		if (x < 0) {
 			x = 0;
 		}
-		const h = Math.floor((100 - x) * 120 / 100);
+		const h = Math.floor(((100 - x) * 120) / 100);
 		const s = Math.abs(x - 50) / 50;
 		const v = 1;
 
