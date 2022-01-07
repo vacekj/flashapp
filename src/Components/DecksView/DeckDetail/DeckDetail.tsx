@@ -33,18 +33,6 @@ const DeckDetail = (props: Props) => {
 				<ModalCloseButton />
 				<ModalHeader>{props.deck.name}</ModalHeader>
 				<ModalBody>
-					{props.deck.description && <div>{props.deck.description}</div>}
-
-					<div className="flex justify-around">
-						<span>Created {props.deck.createdAt.toDate().toLocaleDateString()}</span>
-						{props.deck.lastAdditionAt && (
-							<span>
-								Last card added
-								{props.deck.lastAdditionAt?.toDate().toLocaleDateString()}
-							</span>
-						)}
-					</div>
-
 					<HStack alignItems={"stretch"} spacing={1} mt={2}>
 						<Input value={deckName} onChange={(e) => setDeckName(e.target.value)} />
 						<Button
@@ -60,15 +48,7 @@ const DeckDetail = (props: Props) => {
 						</Button>
 					</HStack>
 				</ModalBody>
-				<ModalFooter>
-					<Button
-						variant={"solid"}
-						colorScheme={"red"}
-						onClick={() => props.onDeckDelete(props.deck.uid)}
-					>
-						Delete deck
-					</Button>
-				</ModalFooter>
+				<ModalFooter></ModalFooter>
 			</ModalContent>
 		</Modal>
 	);

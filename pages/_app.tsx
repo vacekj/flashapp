@@ -16,7 +16,7 @@ const firebaseConfig = {
 	measurementId: "G-1CCSX7MC9F",
 };
 
-const theme = extendTheme({
+const chakraTheme = extendTheme({
 	colors: {
 		gray: {
 			50: "#f9fafb",
@@ -34,11 +34,14 @@ const theme = extendTheme({
 			"100": "#F9F9F9",
 		},
 	},
+	shadows: {
+		lg: "rgba(0, 0, 0, 0.1) 0px 4px 12px;",
+	},
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
 	return (
-		<ChakraProvider theme={theme}>
+		<ChakraProvider theme={chakraTheme}>
 			<FirebaseContext.Provider value={firebaseConfig}>
 				<Component {...pageProps} />
 			</FirebaseContext.Provider>

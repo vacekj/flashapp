@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Deck, getCardsStatus, useCardsOfDeck, useReviewsOfDeck } from "@/src/Lib/Storage";
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import {
+	Deck,
+	getCardsStatus,
+	Revision,
+	useCardsOfDeck,
+	useReviewsOfDeck,
+} from "@/src/Lib/Storage";
+import { Box, Button, HStack, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import DeckDetail from "../DeckDetail";
 import Link from "next/link";
+import { Card } from "@/src/Lib/Storage";
+import { formatDistance } from "date-fns";
+import { HiTrash } from "react-icons/hi";
 
 interface Props {
 	deck: Deck;
@@ -16,8 +25,6 @@ export default function DeckCard(props: Props) {
 	const { revisions } = useReviewsOfDeck(props.deck.uid);
 
 	const cardsWithStatus = getCardsStatus(cards ?? [], revisions ?? []);
-	const reviewedCards = cardsWithStatus.filter((card) => card.hasBeenReviewed);
-	const unseenCards = cardsWithStatus.filter((card) => !card.hasBeenReviewed);
 
 	return (
 		<>
@@ -29,25 +36,80 @@ export default function DeckCard(props: Props) {
 					setDetailOpen(false);
 				}}
 			/>
-			<HStack p={5} justifyContent={"space-between"} bg={"white"} mx={3} rounded={"lg"}>
-				<Box onClick={() => setDetailOpen(true)} flexGrow={2}>
-					<Text fontSize={"lg"} fontWeight={"bold"}>
-						{props.deck.name}
+			<SimpleGrid shadow={"lg"} rounded={"xl"} mx={3} bg={"white"} p={5}>
+				<HStack justifyContent={"space-between"}>
+					<Box onClick={() => setDetailOpen(true)} flexGrow={2}>
+						<Text fontSize={"2xl"} fontWeight={"bold"}>
+							{props.deck.name}
+						</Text>
+					</Box>
+					<Box className="items-end">
+						<Link href={cards?.length ? "/decks/" + props.deck.uid : "#"}>
+							<Button
+								disabled={cards?.length === 0}
+								variant={"solid"}
+								color={""}
+								as={"a"}
+							>
+								Review
+							</Button>
+						</Link>
+					</Box>
+				</HStack>
+				<CardsStats cardsWithStatus={cardsWithStatus} />
+				<HStack justifyContent={"space-between"}>
+					<Text fontSize={"sm"} color={"gray.300"}>
+						Created{" "}
+						{formatDistance(props.deck.createdAt.toDate(), new Date(), {
+							addSuffix: true,
+						})}
 					</Text>
-				</Box>
-				<Box className="items-end">
-					<Link href={cards?.length ? "/decks/" + props.deck.uid : "#"}>
-						<Button
-							disabled={cards?.length === 0}
-							variant={"solid"}
-							color={""}
-							as={"a"}
-						>
-							Review
-						</Button>
-					</Link>
-				</Box>
-			</HStack>
+					<Button
+						variant={"ghost"}
+						colorScheme={"red"}
+						onClick={() => props.onDeckDelete(props.deck.uid)}
+						leftIcon={<HiTrash />}
+					>
+						Delete deck
+					</Button>
+				</HStack>
+			</SimpleGrid>
 		</>
+	);
+}
+
+function CardsStats(props: {
+	cardsWithStatus: (Card & { hasBeenReviewed: Revision | undefined })[];
+}) {
+	const reviewedCards = props.cardsWithStatus.filter((card) => card.hasBeenReviewed);
+	const unseenCards = props.cardsWithStatus.filter((card) => !card.hasBeenReviewed);
+
+	return (
+		<SimpleGrid columns={3} rows={1} spacing={3} m={3}>
+			<VStack p={2} rounded={"lg"}>
+				<Text fontSize={"lg"} fontWeight={"600"} color={"green.500"}>
+					{reviewedCards.length}
+				</Text>
+				<Text fontSize={"sm"} color={"gray.600"}>
+					Reviewed
+				</Text>
+			</VStack>
+			<VStack p={2} rounded={"lg"}>
+				<Text fontSize={"lg"} fontWeight={"600"}>
+					{unseenCards.length}
+				</Text>
+				<Text fontSize={"sm"} color={"gray.600"}>
+					Unseen
+				</Text>
+			</VStack>
+			<VStack p={2} rounded={"lg"}>
+				<Text fontSize={"lg"} fontWeight={"600"}>
+					{unseenCards.length + reviewedCards.length}
+				</Text>
+				<Text fontSize={"sm"} color={"gray.600"}>
+					Total
+				</Text>
+			</VStack>
+		</SimpleGrid>
 	);
 }
