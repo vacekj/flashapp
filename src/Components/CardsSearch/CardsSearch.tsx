@@ -34,7 +34,7 @@ export default function CardsSearch() {
 					</Link>
 				</TopbarContainer>
 			</Topbar>
-			<VStack spacing={3} mt={3} p={3} alignItems={"stretch"} bg={"gray.100"}>
+			<VStack h={"full"} spacing={3} p={3} alignItems={"stretch"} bg={"gray.100"}>
 				<Search onSubmit={(value) => setFilter(value)} />
 				{cards === null &&
 					Array(3)

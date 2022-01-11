@@ -122,7 +122,7 @@ export function useReviewsOfDeck(deckUid: string) {
 export function useCardsOfDeck(deckUid: string) {
 	const firestore = useFirestore();
 	const collectionRef = collection(firestore, CARDS_COLLECTION);
-	const q = query(collectionRef, where("deckUid", "==", deckUid), where("deleted", "!=", true));
+	const q = query(collectionRef, where("deckUid", "==", deckUid));
 	// @ts-expect-error
 	const [cards, loading, error] = useCollectionData<Card[]>(q);
 	// @ts-expect-error

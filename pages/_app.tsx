@@ -17,6 +17,13 @@ const firebaseConfig = {
 };
 
 const chakraTheme = extendTheme({
+	styles: {
+		global: (props) => ({
+			"html, body": {
+				background: props.colorMode === "dark" ? "gray.700" : "background.100",
+			},
+		}),
+	},
 	colors: {
 		gray: {
 			50: "#f9fafb",

@@ -3,8 +3,10 @@ import { useDecksOfCurrentUser } from "../../Lib/Storage";
 import Topbar from "../Topbar";
 import { useRouter } from "next/router";
 import { useUser } from "../../Lib/Auth";
-import { Button, HStack, Icon, Text } from "@chakra-ui/react";
+import { Box, Button, chakra, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
 import { HiOutlineUser } from "react-icons/hi";
+import NextImage from "next/image";
+import { formatDistanceToNow } from "date-fns";
 
 function Profile() {
 	const router = useRouter();
@@ -29,26 +31,25 @@ function Profile() {
 				</HStack>
 			</Topbar>
 
-			<div className="flex flex-col rounded-lg shadow p-5 m-3 bg-white">
-				<div className="flex mb-3">
-					<Icon mr={4} rounded={"full"} h={16} as={HiOutlineUser} />
-					<div className="w-2/3 flex flex-col justify-center">
-						<div className="font-semibold text-xl">
-							{user?.displayName ?? user?.email ?? "Anonymous"}
-						</div>
-						{user?.displayName && <div className="text-gray-700">{user?.email}</div>}
-					</div>
+			<VStack rounded={"xl"} shadow={"lg"} p={[5]} m={[3]} bg={"white"}>
+				{user?.photoURL && (
+					<ChakraNextImage
+						rounded={"full"}
+						src={user?.photoURL}
+						width={"100px"}
+						height={"100px"}
+					/>
+				)}
+				<div className="font-semibold text-xl">
+					{user?.displayName ?? user?.email ?? "Anonymous"}
 				</div>
-
-				<div>
-					<div className="text-sm text-gray-700 leading-snug">
-						Member since: {user?.metadata.creationTime}
-					</div>
-					<div className="text-sm text-gray-700 leading-snug">
-						Last sign-in: {user?.metadata.creationTime}
-					</div>
-				</div>
-			</div>
+				{user?.displayName && <div className="text-gray-700">{user?.email}</div>}
+				{user?.metadata.creationTime && (
+					<Box>
+						Registered for {formatDistanceToNow(new Date(user?.metadata.creationTime))}
+					</Box>
+				)}
+			</VStack>
 
 			<div className="flex flex-col justify-start">
 				<div className="m-3 mt-0 text-white rounded p-5 bg-indigo-500">
@@ -58,4 +59,10 @@ function Profile() {
 		</main>
 	);
 }
+
+const ChakraNextImage = chakra(NextImage, {
+	baseStyle: { maxH: 120, maxW: 120 },
+	shouldForwardProp: (prop) => ["width", "height", "src", "alt", "layout"].includes(prop),
+});
+
 export default Profile;

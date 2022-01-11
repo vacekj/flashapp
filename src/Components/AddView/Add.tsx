@@ -33,6 +33,8 @@ import { getDoc } from "@firebase/firestore";
 import { HiOutlinePlay, HiOutlineX } from "react-icons/hi";
 import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
 import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
+import { router } from "next/client";
+import { useRouter } from "next/router";
 
 const DeckComponent = require("../Deck").default;
 
@@ -56,8 +58,12 @@ export default function Add() {
 		return (b.lastAdditionAt?.seconds || 0) - (a.lastAdditionAt?.seconds || 0);
 	});
 
+	const router = useRouter();
+
+	const deckFromUrl = router.query.deck as string;
+
 	const [state, setState] = useState<State>({
-		selectedDeckUid: lastAddedToDeck[0]?.uid,
+		selectedDeckUid: deckFromUrl ?? lastAddedToDeck[0]?.uid,
 		front: "",
 		back: "",
 		previewing: false,

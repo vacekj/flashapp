@@ -38,8 +38,12 @@ export default function DeckCard(props: Props) {
 			/>
 			<SimpleGrid shadow={"lg"} rounded={"xl"} mx={3} bg={"white"} p={5}>
 				<HStack justifyContent={"space-between"}>
-					<Box onClick={() => setDetailOpen(true)} flexGrow={2}>
-						<Text fontSize={"2xl"} fontWeight={"bold"}>
+					<Box flexGrow={2}>
+						<Text
+							fontSize={"2xl"}
+							onClick={() => setDetailOpen(true)}
+							fontWeight={"bold"}
+						>
 							{props.deck.name}
 						</Text>
 					</Box>
@@ -56,9 +60,18 @@ export default function DeckCard(props: Props) {
 						</Link>
 					</Box>
 				</HStack>
-				<CardsStats cardsWithStatus={cardsWithStatus} />
+				{cards?.length ? (
+					<CardsStats cardsWithStatus={cardsWithStatus} />
+				) : (
+					<Box my={3}>
+						There are no cards in this deck yet.{" "}
+						<Link href={"/add?deck=" + props.deck.uid}>
+							<Button variant={"link"}>Click here to add some!</Button>
+						</Link>{" "}
+					</Box>
+				)}
 				<HStack justifyContent={"space-between"}>
-					<Text fontSize={"sm"} color={"gray.300"}>
+					<Text fontSize={"sm"} color={"gray.400"}>
 						Created{" "}
 						{formatDistance(props.deck.createdAt.toDate(), new Date(), {
 							addSuffix: true,
