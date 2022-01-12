@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import {
-	Deck,
-	getCardsStatus,
-	Revision,
-	useCardsOfDeck,
-	useReviewsOfDeck,
-} from "@/src/Lib/Storage";
+import { Deck, getCardsStatus, useCardsOfDeck, useReviewsOfDeck } from "@/src/Lib/Storage";
 import { Box, Button, HStack, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import DeckDetail from "../DeckDetail";
 import Link from "next/link";
 import { Card } from "@/src/Lib/Storage";
 import { formatDistance } from "date-fns";
 import { HiTrash } from "react-icons/hi";
+import { Review } from "@/src/Components/ReviewPage";
 
 interface Props {
 	deck: Deck;
@@ -92,7 +87,7 @@ export default function DeckCard(props: Props) {
 }
 
 function CardsStats(props: {
-	cardsWithStatus: (Card & { hasBeenReviewed: Revision | undefined })[];
+	cardsWithStatus: (Card & { hasBeenReviewed: Review | undefined })[];
 }) {
 	const reviewedCards = props.cardsWithStatus.filter((card) => card.hasBeenReviewed);
 	const unseenCards = props.cardsWithStatus.filter((card) => !card.hasBeenReviewed);

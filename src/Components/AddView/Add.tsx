@@ -33,10 +33,9 @@ import { getDoc } from "@firebase/firestore";
 import { HiOutlinePlay, HiOutlineX } from "react-icons/hi";
 import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
 import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
-import { router } from "next/client";
 import { useRouter } from "next/router";
 
-const DeckComponent = require("../Deck").default;
+// const DeckComponent = require("../Deck").default;
 
 interface State {
 	selectedDeckUid: string | null;
@@ -81,17 +80,17 @@ export default function Add() {
 			>
 				<ModalContent>
 					<ModalCloseButton zIndex={10000} />
-					<DeckComponent
-						cards={[
-							{
-								front: state.front,
-								back: state.back,
-								id: -1,
-								deckId: -1,
-							},
-						]}
-						onSwipe={() => {}}
-					/>
+					{/*<DeckComponent*/}
+					{/*	cards={[*/}
+					{/*		{*/}
+					{/*			front: state.front,*/}
+					{/*			back: state.back,*/}
+					{/*			id: -1,*/}
+					{/*			deckId: -1,*/}
+					{/*		},*/}
+					{/*	]}*/}
+					{/*	onSwipe={() => {}}*/}
+					{/*/>*/}
 				</ModalContent>
 			</Modal>
 
@@ -100,13 +99,13 @@ export default function Add() {
 					<TopbarContainer>
 						<TopbarTitle>Add cards</TopbarTitle>
 						<HStack spacing={3}>
-							<IconButton
-								icon={<Icon as={HiOutlinePlay} />}
-								disabled={state.front.length + state.back.length < 1}
-								onClick={() => setState({ ...state, previewing: true })}
-								size="lg"
-								aria-label="Preview"
-							/>
+							{/*<IconButton*/}
+							{/*	icon={<Icon as={HiOutlinePlay} />}*/}
+							{/*	disabled={state.front.length + state.back.length < 1}*/}
+							{/*	onClick={() => setState({ ...state, previewing: true })}*/}
+							{/*	size="lg"*/}
+							{/*	aria-label="Preview"*/}
+							{/*/>*/}
 							<Button
 								disabled={
 									state.selectedDeckUid === null ||

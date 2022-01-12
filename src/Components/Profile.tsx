@@ -20,6 +20,7 @@ function Profile() {
 	const router = useRouter();
 	const { user, signOut } = useUser();
 	const db = useFirestore();
+	// @ts-ignore
 	const [reviews] = useCollectionData<Review>(collection(db, REVIEWS_COLLECTION));
 	return (
 		<main className="flex flex-1 flex-col">
