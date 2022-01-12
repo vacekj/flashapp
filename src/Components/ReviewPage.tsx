@@ -1,5 +1,12 @@
 import React, { createRef, useCallback, useEffect, useRef, useState } from "react";
-import { Card, useCardsOfDeck, useDeckByUid } from "@/src/Lib/Storage";
+import {
+	Card,
+	createReview,
+	useCardsOfDeck,
+	useCardsOfDeckOnce,
+	useDeckByUid,
+	useFirestore,
+} from "@/src/Lib/Storage";
 import {
 	Box,
 	Button,
@@ -9,6 +16,7 @@ import {
 	Icon,
 	IconButton,
 	Link,
+	Text,
 	VStack,
 } from "@chakra-ui/react";
 import Topbar from "@/src/Components/Topbar";
@@ -16,6 +24,7 @@ import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
 import { HiArrowLeft, HiCheck, HiX } from "react-icons/hi";
 import { BiUndo } from "react-icons/bi";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { addDoc, getDoc, Timestamp } from "@firebase/firestore";
 
 interface Props {
 	deckUid: string;
@@ -33,9 +42,9 @@ function ReviewCard(props: {
 
 	useEffect(() => {
 		return x.onChange((x) => {
-			if (x > 300) {
+			if (x > 600) {
 				props.onSuccess(props.card);
-			} else if (x < -300) {
+			} else if (x < -600) {
 				props.onFailure(props.card);
 			}
 		});
@@ -87,31 +96,52 @@ function ReviewCard(props: {
 	);
 }
 
-export default function Review(props: Props) {
+export default function ReviewPage(props: Props) {
+	const firestore = useFirestore();
 	const { deck } = useDeckByUid(props.deckUid);
-	const { cards } = useCardsOfDeck(props.deckUid);
+	const { cards } = useCardsOfDeckOnce(props.deckUid);
 	let cardsRef = useRef<Card[]>();
 	useEffect(() => {
 		cardsRef.current = cards;
 	}, [cards]);
 
-	const [reviewedCards, setReviewedCards] = useState<Card[]>([]);
-	const reviewEnded = reviewedCards.length === cards?.length;
+	const [reviews, setReviews] = useState<Review[]>([]);
+	const reviewEnded = reviews.length === cards?.length;
+	const correctAnswers = reviews.filter((r) => r.value === 1).length;
+	const incorrectAnswers = reviews.filter((r) => r.value === 0).length;
 
-	const failCard = () => {
-		setReviewedCards((prevState) => {
-			// @ts-ignore
-			const cardToFail = cardsRef.current[cardsRef.current.length - 1 - reviewedCards.length];
-			return [...prevState, cardToFail];
+	useEffect(() => {
+		if (reviewEnded) {
+		}
+	}, [reviews, reviewEnded]);
+
+	const failCard = async () => {
+		// @ts-expect-error
+		const cardToFail = cardsRef.current[cardsRef.current.length - 1 - reviews.length];
+		const review = await createReview(firestore, {
+			cardUid: cardToFail.uid,
+			created_on: Timestamp.now(),
+			value: 0,
+		});
+		const reviewData = (await getDoc<Review>(review)).data();
+		setReviews((prevState) => {
+			console.log(reviewData);
+			return [...prevState, reviewData!];
 		});
 	};
 
-	const sucessCard = () => {
-		setReviewedCards((prevState) => {
-			const cardToSuccess =
-				// @ts-ignore
-				cardsRef.current[cardsRef.current.length - 1 - reviewedCards.length];
-			return [...prevState, cardToSuccess];
+	const sucessCard = async () => {
+		// @ts-expect-error
+		const cardToSucc = cardsRef.current[cardsRef.current.length - 1 - reviews.length];
+		const review = await createReview(firestore, {
+			cardUid: cardToSucc.uid,
+			created_on: Timestamp.now(),
+			value: 1,
+		});
+		const reviewData = (await getDoc<Review>(review)).data();
+		setReviews((prevState) => {
+			console.log(reviewData);
+			return [...prevState, reviewData!];
 		});
 	};
 
@@ -127,28 +157,42 @@ export default function Review(props: Props) {
 							icon={<Icon as={HiArrowLeft} />}
 						/>
 					</Link>
-					<Box onClick={() => setReviewedCards([])}>{reviewEnded ? "End" : "going"}</Box>
+					<Box fontWeight={"medium"}>{deck?.name}</Box>
 				</TopbarContainer>
 			</Topbar>
 			<Box bg={"background.100"} h={"full"} position={"relative"} z={1000}>
 				{cards
-					?.filter((card) => !reviewedCards.includes(card))
+					?.filter((card) => !reviews.find((r) => r.cardUid === card.uid))
 					.map((card) => {
 						return (
 							<ReviewCard
 								key={card.uid}
 								card={card}
-								onSuccess={(changedCard: Card) => {
-									console.log("succ");
-									setReviewedCards([...reviewedCards, changedCard]);
-								}}
-								onFailure={(changedCard: Card) => {
-									console.log("fail");
-									setReviewedCards([...reviewedCards, changedCard]);
-								}}
+								onSuccess={sucessCard}
+								onFailure={failCard}
 							/>
 						);
 					})}
+				{reviewEnded && (
+					<VStack>
+						<Box>Review ended</Box>
+						<Box>
+							<Text as={"span"} color={"green.500"}>
+								{correctAnswers} correct
+							</Text>{" "}
+							answers
+						</Box>
+						<Box>
+							<Text as={"span"} color={"red.500"}>
+								{incorrectAnswers} incorrect
+							</Text>{" "}
+							answers
+						</Box>
+						<Box>
+							{((correctAnswers / cards.length) * 100).toFixed(2)}% success rate
+						</Box>
+					</VStack>
+				)}
 			</Box>
 			<HStack justifyContent={"space-around"} p={6} pt={3} w={"full"}>
 				<Button
@@ -160,24 +204,24 @@ export default function Review(props: Props) {
 					h={16}
 					w={16}
 					onClick={failCard}
+					disabled={reviewEnded}
 				>
 					<Icon fontSize={"30"} color={"red.500"} as={HiX} />
 				</Button>
 				<Button
-					size={"lg"}
 					shadow={"lg"}
 					bg={"white"}
 					rounded={"full"}
 					aria-label={"Invalid"}
-					h={16}
-					w={16}
+					h={14}
+					w={14}
 					onClick={() => {
-						setReviewedCards((prevState) => {
+						setReviews((prevState) => {
 							return prevState.slice(0, -1);
 						});
 					}}
 				>
-					<Icon fontSize={"30"} as={BiUndo} />
+					<Icon fontSize={"28"} as={BiUndo} />
 				</Button>
 				<Button
 					size={"lg"}
@@ -188,6 +232,7 @@ export default function Review(props: Props) {
 					h={16}
 					w={16}
 					onClick={sucessCard}
+					disabled={reviewEnded}
 				>
 					<Icon fontSize={"30"} color={"green.500"} as={HiCheck} />
 				</Button>
@@ -195,3 +240,14 @@ export default function Review(props: Props) {
 		</VStack>
 	);
 }
+
+export type ReviewedCard = Card & {
+	success: boolean;
+};
+
+export type Review = {
+	created_on: Timestamp;
+	cardUid: string;
+	/* 0 = failure, 1 = success */
+	value: 0 | 1;
+};

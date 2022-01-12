@@ -15,9 +15,15 @@ import {
 import { DocumentReference, query } from "@firebase/firestore";
 import { useFirebaseApp } from "./Firebase";
 import { useUser } from "./Auth";
-import { useCollectionData, useDocumentData } from "react-firebase-hooks/firestore";
+import {
+	useCollectionData,
+	useCollectionDataOnce,
+	useDocumentData,
+} from "react-firebase-hooks/firestore";
 import { useEffect, useMemo, useState } from "react";
-import Review from "@/src/Components/Review";
+import ReviewPage, { Review } from "@/src/Components/ReviewPage";
+import firebase from "firebase/compat";
+import firestore = firebase.firestore;
 
 export const DECKS_COLLECTION = "decks";
 export const CARDS_COLLECTION = "cards";
@@ -97,13 +103,13 @@ export async function getRevisionsOfCard(db: Firestore, cardUid: string) {
 	const collectionRef = collection(db, REVIEWS_COLLECTION);
 	const q = query(collectionRef, where("cardUid", "==", cardUid));
 	const reviewsSnapshot = await getDocs(q);
-	return reviewsSnapshot.docs.map((snapshot) => snapshot.data()) as Revision[];
+	return reviewsSnapshot.docs.map((snapshot) => snapshot.data()) as Review[];
 }
 
 export function useReviewsOfDeck(deckUid: string) {
 	const firestore = useFirestore();
 	const { cards, loading, error } = useCardsOfDeck(deckUid);
-	const [revisions, setRevisions] = useState<Revision[]>();
+	const [revisions, setRevisions] = useState<Review[]>();
 	useEffect(() => {
 		if (!cards?.length) {
 			return;
@@ -124,13 +130,42 @@ export function useCardsOfDeck(deckUid: string) {
 	const collectionRef = collection(firestore, CARDS_COLLECTION);
 	const q = query(collectionRef, where("deckUid", "==", deckUid));
 	// @ts-expect-error
-	const [cards, loading, error] = useCollectionData<Card[]>(q);
+	const [cards, loading, error] = useCollectionData<Card[]>(q, {
+		idField: "uid",
+	});
 	// @ts-expect-error
 	return { cards, loading, error } as {
 		cards: Card[];
 		loading: boolean;
 		error: FirestoreError | undefined;
 	};
+}
+
+export function useCardsOfDeckOnce(deckUid: string) {
+	const firestore = useFirestore();
+	const collectionRef = collection(firestore, CARDS_COLLECTION);
+	const q = query(collectionRef, where("deckUid", "==", deckUid));
+	// @ts-expect-error
+	const [cards, loading, error] = useCollectionDataOnce<Card[]>(q, {
+		idField: "uid",
+	});
+	// @ts-expect-error
+	return { cards, loading, error } as {
+		cards: Card[];
+		loading: boolean;
+		error: FirestoreError | undefined;
+	};
+}
+
+export async function createReview(db: Firestore, review: Review) {
+	const reviewToAdd: Omit<Review, "uid"> = {
+		...review,
+		created_on: Timestamp.now(),
+	};
+
+	/*Insert card into Cards collection*/
+	// @ts-expect-error
+	return await addDoc<Review>(collection(db, REVIEWS_COLLECTION), reviewToAdd);
 }
 
 export async function createCard(db: Firestore, card: CardToAdd) {
@@ -149,7 +184,7 @@ export async function createCard(db: Firestore, card: CardToAdd) {
 	return await addDoc(collection(db, CARDS_COLLECTION), cardToAdd);
 }
 
-export function getCardsStatus(cards: Card[], revisions: Revision[]) {
+export function getCardsStatus(cards: Card[], revisions: Review[]) {
 	return cards.map((card) => {
 		const hasBeenReviewed = revisions.find((revision) => revision.cardUid === card.uid);
 		return { ...card, hasBeenReviewed };
@@ -196,13 +231,4 @@ export interface Deck extends DeckToSave {
 	updatedAt: Timestamp;
 	lastAdditionAt?: Timestamp;
 	deleted?: boolean;
-}
-
-export interface Revision {
-	uid: string;
-	cardUid: string;
-	/*True = remember, False = don't remember*/
-	result: boolean;
-	/*Time in miliseconds from seeing the card to answer*/
-	time: number;
 }

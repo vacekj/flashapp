@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
-const DynamicReview = dynamic(() => import("@/src/Components/Review"), { ssr: false });
+const DynamicReview = dynamic(() => import("@/src/Components/ReviewPage"), { ssr: false });
 
 export default function DeckPage() {
 	const router = useRouter();
