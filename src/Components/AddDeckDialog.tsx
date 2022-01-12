@@ -2,9 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import {
 	Button,
-	CircularProgress,
 	FormControl,
-	FormHelperText,
 	FormLabel,
 	Input,
 	Modal,
@@ -14,10 +12,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Textarea,
-	useStyles,
 } from "@chakra-ui/react";
-import deck from "@/src/Components/Deck";
 
 export interface NewDeck {
 	name: string;

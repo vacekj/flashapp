@@ -1,10 +1,9 @@
 import * as React from "react";
-import { useDecksOfCurrentUser } from "../../Lib/Storage";
-import Topbar from "../Topbar";
+import { useDecksOfCurrentUser } from "@/src//Lib/Storage";
+import Topbar from "@/src/Components/Topbar";
 import { useRouter } from "next/router";
-import { useUser } from "../../Lib/Auth";
-import { Box, Button, chakra, HStack, Icon, Image, Text, VStack } from "@chakra-ui/react";
-import { HiOutlineUser } from "react-icons/hi";
+import { useUser } from "@/src/Lib/Auth";
+import { Box, Button, chakra, HStack, Text, VStack } from "@chakra-ui/react";
 import NextImage from "next/image";
 import { formatDistanceToNow } from "date-fns";
 

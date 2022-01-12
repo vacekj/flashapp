@@ -1,6 +1,6 @@
-import styles from "../src/App.module.css";
-import Profile from "../src/Components/Profile/Profile";
-import Bottombar from "../src/Components/Bottombar";
+import styles from "@/src/App.module.css";
+import Profile from "@/src/Components/Profile";
+import Bottombar from "@/src/Components/Bottombar";
 import React from "react";
 
 export default function () {

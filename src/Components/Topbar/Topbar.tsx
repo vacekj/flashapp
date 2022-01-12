@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ComponentProps } from "react";
 import styles from "./Topbar.module.css";
-import { Box } from "@chakra-ui/react";
+import { Box, ChakraProps } from "@chakra-ui/react";
 
-function Topbar(props: ComponentProps<"div">) {
+function Topbar(props: ComponentProps<"div"> & ChakraProps) {
 	return (
-		<Box className={styles.topbar} bg={"white"}>
+		<Box className={styles.topbar} bg={"white"} {...props}>
 			{props.children}
 		</Box>
 	);

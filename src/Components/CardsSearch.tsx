@@ -1,18 +1,9 @@
 import React, { useState } from "react";
-import Topbar from "../Topbar";
-import { useAllCardsOfUser } from "../../Lib/Storage";
+import Topbar from "@/src/Components/Topbar";
+import { useAllCardsOfUser } from "@/src/Lib/Storage";
 import Link from "next/link";
-import {
-	Icon,
-	IconButton,
-	Skeleton,
-	VStack,
-	Input,
-	InputGroup,
-	InputRightAddon,
-	Box,
-} from "@chakra-ui/react";
-import { HiOutlinePlus, HiOutlineSearch } from "react-icons/hi";
+import { Box, Icon, IconButton, Input, InputGroup, Skeleton, VStack } from "@chakra-ui/react";
+import { HiOutlinePlus } from "react-icons/hi";
 import TopbarContainer from "@/src/Components/Topbar/TopbarContainer";
 import TopbarTitle from "@/src/Components/Topbar/TopbarTitle";
 

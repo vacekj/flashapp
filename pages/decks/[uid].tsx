@@ -11,7 +11,6 @@ export default function DeckPage() {
 	return (
 		<div className={styles.main}>
 			<DynamicReview deckUid={router.query.uid as string} />
-			<Bottombar />
 		</div>
 	);
 }
