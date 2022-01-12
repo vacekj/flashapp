@@ -1,17 +1,26 @@
 import * as React from "react";
-import { useDecksOfCurrentUser } from "@/src//Lib/Storage";
+import {
+	REVIEWS_COLLECTION,
+	useDecksOfCurrentUser,
+	useFirestore,
+	useReviewsOfDeck,
+} from "@/src//Lib/Storage";
 import Topbar from "@/src/Components/Topbar";
 import { useRouter } from "next/router";
 import { useUser } from "@/src/Lib/Auth";
 import { Box, Button, chakra, HStack, Text, VStack } from "@chakra-ui/react";
 import NextImage from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import ProfileReviewHistory from "@/src/Components/ProfileReviewHistory";
+import { useCollectionData, useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import { collection } from "@firebase/firestore";
+import { Review } from "@/src/Components/ReviewPage";
 
 function Profile() {
 	const router = useRouter();
 	const { user, signOut } = useUser();
-	const { decks } = useDecksOfCurrentUser();
-
+	const db = useFirestore();
+	const [reviews] = useCollectionData<Review>(collection(db, REVIEWS_COLLECTION));
 	return (
 		<main className="flex flex-1 flex-col">
 			<Topbar>
@@ -50,11 +59,9 @@ function Profile() {
 				)}
 			</VStack>
 
-			<div className="flex flex-col justify-start">
-				<div className="m-3 mt-0 text-white rounded p-5 bg-indigo-500">
-					{decks?.length} decks total
-				</div>
-			</div>
+			<VStack h={96} bg={"white"} rounded={"lg"} shadow={"lg"} m={3} p={3}>
+				<ProfileReviewHistory reviews={reviews} />
+			</VStack>
 		</main>
 	);
 }
