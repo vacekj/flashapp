@@ -1,6 +1,7 @@
 import * as React from "react";
 import {
 	REVIEWS_COLLECTION,
+	useAllCardsOfUser,
 	useDecksOfCurrentUser,
 	useFirestore,
 	useReviewsOfDeck,
@@ -13,15 +14,19 @@ import NextImage from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import ProfileReviewHistory from "@/src/Components/ProfileReviewHistory";
 import { useCollectionData, useCollectionDataOnce } from "react-firebase-hooks/firestore";
-import { collection } from "@firebase/firestore";
+import { collection, where } from "@firebase/firestore";
 import { Review } from "@/src/Components/ReviewPage";
+import { query } from "@firebase/database";
 
 function Profile() {
 	const router = useRouter();
 	const { user, signOut } = useUser();
 	const db = useFirestore();
-	// @ts-ignore
-	const [reviews] = useCollectionData<Review>(collection(db, REVIEWS_COLLECTION));
+	const { cards } = useAllCardsOfUser();
+	const reviewsCol = collection(db, REVIEWS_COLLECTION);
+	const [reviews] = useCollectionData<Review>(
+		query(reviewsCol, where("cardUid", "in", cards?.map((c) => c.uid) ?? []))
+	);
 	return (
 		<main className="flex flex-1 flex-col">
 			<Topbar>
